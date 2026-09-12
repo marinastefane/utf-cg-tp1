@@ -38,6 +38,9 @@ let playerPosLocation;
 let resolutionLocation;
 let canvas;
 let playerTexture;
+//adicionando o chão - Sophia 19/02/2026 como teste
+let groundTexture;
+let groundVao;
 
 // compila os shaders uma vez só
 function createShader(gl, type, source) {
@@ -103,7 +106,6 @@ function configuraTudo() {
   const vertices = new Float32Array([
     -25, -25, 25, -25, -25, 25, -25, 25, 25, -25, 25, 25,
   ]);
-
   // Mapeamento das coordenadas UV da textura
   const texcoords = new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]);
 
@@ -127,6 +129,105 @@ function configuraTudo() {
   const texcoordLoc = gl.getAttribLocation(program, "a_texcoord");
   gl.vertexAttribPointer(texcoordLoc, 2, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(texcoordLoc);
+
+ //SOPHIA 
+// ===============================
+// CHÃO
+// ===============================
+// O chão será formado pela textura Pink_Brick.
+// Cada bloco será desenhado com 64x64 pixels.
+const groundVertices = new Float32Array([
+  -32, -32,
+   32, -32,
+  -32,  32,
+
+  -32,  32,
+   32, -32,
+   32,  32,
+]);
+
+const groundTexcoords = new Float32Array([
+  0, 0,
+  1, 0,
+  0, 1,
+
+  0, 1,
+  1, 0,
+  1, 1,
+]);
+
+groundVao = gl.createVertexArray();
+gl.bindVertexArray(groundVao);
+
+// posições do tile
+const groundPositionBuffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, groundPositionBuffer);
+gl.bufferData(gl.ARRAY_BUFFER, groundVertices, gl.STATIC_DRAW);
+
+gl.vertexAttribPointer(posicaoLoc, 2, gl.FLOAT, false, 0, 0);
+gl.enableVertexAttribArray(posicaoLoc);
+
+// coordenadas da textura
+const groundTexcoordBuffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, groundTexcoordBuffer);
+gl.bufferData(gl.ARRAY_BUFFER, groundTexcoords, gl.STATIC_DRAW);
+
+gl.vertexAttribPointer(texcoordLoc, 2, gl.FLOAT, false, 0, 0);
+gl.enableVertexAttribArray(texcoordLoc);
+
+//SOPHIA
+// ===============================
+// TEXTURA DO CHÃO
+// ===============================
+
+groundTexture = gl.createTexture();
+gl.bindTexture(gl.TEXTURE_2D, groundTexture);
+
+// pixel temporário enquanto a imagem carrega
+gl.texImage2D(
+  gl.TEXTURE_2D,
+  0,
+  gl.RGBA,
+  1,
+  1,
+  0,
+  gl.RGBA,
+  gl.UNSIGNED_BYTE,
+  new Uint8Array([0, 255, 0, 255]),
+);
+
+const groundImage = new Image();
+groundImage.src = "assets/cenario/Pink_Brick.png";
+
+groundImage.onload = () => {
+  gl.bindTexture(gl.TEXTURE_2D, groundTexture);
+
+  gl.texImage2D(
+    gl.TEXTURE_2D,
+    0,
+    gl.RGBA,
+    gl.RGBA,
+    gl.UNSIGNED_BYTE,
+    groundImage
+  );
+
+  // Mantém os pixels definidos, sem borrar
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+};
+
+groundImage.onerror = () => {
+  console.error(
+    "ERRO: não foi possível carregar a textura do chão:",
+    groundImage.src
+  );
+};
+///////////////////////////////
+
+
+
 
   // variáveis uniform no shader
   playerPosLocation = gl.getUniformLocation(program, "u_playerPos");
@@ -217,6 +318,35 @@ function atualizaLogica(quantoPassou) {
 function desenhaCena(gl) {
   gl.viewport(0, 0, canvas.width, canvas.height);
   gl.clear(gl.COLOR_BUFFER_BIT);
+
+//SOPHIA 
+// ===============================
+// DESENHA O CHÃO
+// ===============================
+
+gl.useProgram(program);
+gl.bindVertexArray(groundVao);
+
+gl.activeTexture(gl.TEXTURE0);
+gl.bindTexture(gl.TEXTURE_2D, groundTexture);
+
+gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+
+// Preenche o chão com tijolos até o final do canvas
+for (let y = FLOOR_Y + 57; y < canvas.height + 32; y += 64) {
+
+  for (let x = 32; x < canvas.width + 32; x += 64) {
+
+    gl.uniform2f(
+      playerPosLocation,
+      x,
+      y
+    );
+
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
+}
+///////////////////////
 
   gl.useProgram(program);
   gl.bindVertexArray(vao);
