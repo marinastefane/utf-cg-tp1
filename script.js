@@ -19,7 +19,7 @@ Quero ataque automatico *por enquanto*, se der tempo colocamos atque com M1
 
 */
 
-// Configurações e estaod do jogo
+// Configurações e estado do jogo
 // testando pra ver se consigo por pra ela pular,
 // precisa colocar gravidade (?) e verificar se ela está ou não n chão
 const player = { x: 50, y: 500, velocityY: 0, noChao: true};
@@ -166,7 +166,9 @@ function configuraTudo() {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   };
 
-  gl.clearColor(0.1, 0.1, 0.1, 1.0);
+  //definindo a cor de fundo do jogo : R,G,B,A 
+  //gl.clearColor(0.1, 0.1, 0.1, 1.0); //fundo cinza bem escuro
+  gl.clearColor(0.97, 0.87, 0.94, 1.0); //fundo rosa claro conforme nossa inspiração
   gl.useProgram(program);
 
   return gl;
@@ -196,6 +198,8 @@ function atualizaLogica(quantoPassou) {
   }
 
   // personagem volta pro chão
+  //ou seja, o personagem para no limite do canvas floor_Y e não continua descendo a página
+  //aqui é como se ele estivesse pisando em uma linha invisível. Tem que alterar 
   if (player.y >= FLOOR_Y) {
     player.y = FLOOR_Y;
     player.velocityY = 0;
