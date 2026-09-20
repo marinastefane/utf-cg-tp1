@@ -19,17 +19,17 @@ Quero ataque automatico *por enquanto*, se der tempo colocamos atque com M1
 
 */
 
-// Configurações e estaod do jogo
+// Configurações e estado do jogo
 // testando pra ver se consigo por pra ela pular,
 // precisa colocar gravidade (?) e verificar se ela está ou não n chão
-const player = { x: 50, y: 500, velocityY: 0, noChao: true};
+const player = { x: 50, y: 500, velocityY: 0, noChao: true };
 const playerSpeed = 200; // pixels por segundo
 const keysPressed = {};
 
 // Grandezas fisicas em pixels/segundo
-const GRAVITY = 1200;    // gravidade
-const JUMP_FORCE = -450;  // forca do pulo, negativo pq o topo da tela no webgl é y = 0
-const FLOOR_Y = 500;     // chao da tela
+const GRAVITY = 1200; // gravidade
+const JUMP_FORCE = -600; // forca do pulo, negativo pq o topo da tela no webgl é y = 0
+const FLOOR_Y = 500; // chao da tela
 
 let gl;
 let program;
@@ -38,6 +38,23 @@ let playerPosLocation;
 let resolutionLocation;
 let canvas;
 let playerTexture;
+//adicionando o chão - Sophia 19/02/2026 como teste
+let groundTexture;
+let groundVao;
+
+// plataformas do cenario
+// ordem de cima pra baixo da esquerda pra direita
+const plataformas = [
+  { x: 300, y: 100, largura: 120, altura: 40 },
+  { x: 100, y: 200, largura: 120, altura: 40 },
+  { x: 450, y: 300, largura: 120, altura: 40 },
+  { x: 550, y: 200, largura: 120, altura: 40 },
+  { x: 200, y: 400, largura: 120, altura: 40 },
+  { x: 680, y: 400, largura: 120, altura: 40 },
+];
+
+// Array que ira guardar o VAO de cada plataforma
+const plataformasVaos = [];
 
 // compila os shaders uma vez só
 function createShader(gl, type, source) {
@@ -128,6 +145,132 @@ function configuraTudo() {
   gl.vertexAttribPointer(texcoordLoc, 2, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(texcoordLoc);
 
+  //SOPHIA
+  // ===============================
+  // CHÃO
+  // ===============================
+  // O chão será formado pela textura Pink_Brick.
+  // Cada bloco será desenhado com 64x64 pixels.
+  const groundVertices = new Float32Array([
+    -32, -32, 32, -32, -32, 32,
+
+    -32, 32, 32, -32, 32, 32,
+  ]);
+
+  const groundTexcoords = new Float32Array([
+    0, 0, 1, 0, 0, 1,
+
+    0, 1, 1, 0, 1, 1,
+  ]);
+
+  groundVao = gl.createVertexArray();
+  gl.bindVertexArray(groundVao);
+
+  // posições do tile
+  const groundPositionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, groundPositionBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, groundVertices, gl.STATIC_DRAW);
+
+  gl.vertexAttribPointer(posicaoLoc, 2, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(posicaoLoc);
+
+  // coordenadas da textura
+  const groundTexcoordBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, groundTexcoordBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, groundTexcoords, gl.STATIC_DRAW);
+
+  gl.vertexAttribPointer(texcoordLoc, 2, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(texcoordLoc);
+
+  // platafromas, cria um VAO e VBO novo para cada uma
+  // mudar aula dia 14/09 ele pediu para não ficar atualizano VBO toda hora, ver como fazer
+  plataformas.forEach((plat) => {
+    const platVao = gl.createVertexArray();
+    gl.bindVertexArray(platVao);
+
+    const platVertices = new Float32Array([
+      0,
+      0,
+      plat.largura,
+      0,
+      0,
+      plat.altura,
+      0,
+      plat.altura,
+      plat.largura,
+      0,
+      plat.largura,
+      plat.altura,
+    ]);
+
+    const platTexcoords = new Float32Array([
+      0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1,
+    ]);
+
+    const platPosBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, platPosBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, platVertices, gl.STATIC_DRAW);
+    gl.vertexAttribPointer(posicaoLoc, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(posicaoLoc);
+
+    const platTexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, platTexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, platTexcoords, gl.STATIC_DRAW);
+    gl.vertexAttribPointer(texcoordLoc, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(texcoordLoc);
+
+    plataformasVaos.push(platVao);
+  });
+
+  //SOPHIA
+  // ===============================
+  // TEXTURA DO CHÃO
+  // ===============================
+
+  groundTexture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, groundTexture);
+
+  // pixel temporário enquanto a imagem carrega
+  gl.texImage2D(
+    gl.TEXTURE_2D,
+    0,
+    gl.RGBA,
+    1,
+    1,
+    0,
+    gl.RGBA,
+    gl.UNSIGNED_BYTE,
+    new Uint8Array([0, 255, 0, 255]),
+  );
+
+  const groundImage = new Image();
+  groundImage.src = "assets/cenario/Pink_Brick.png";
+
+  groundImage.onload = () => {
+    gl.bindTexture(gl.TEXTURE_2D, groundTexture);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      groundImage,
+    );
+
+    // Mantém os pixels definidos, sem borrar
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  };
+
+  // groundImage.onerror = () => {
+  //   console.error(
+  //     "ERRO: não foi possível carregar a textura do chão:",
+  //     groundImage.src,
+  //   );
+  // };
+
   // variáveis uniform no shader
   playerPosLocation = gl.getUniformLocation(program, "u_playerPos");
   resolutionLocation = gl.getUniformLocation(program, "u_resolution");
@@ -166,7 +309,9 @@ function configuraTudo() {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   };
 
-  gl.clearColor(0.1, 0.1, 0.1, 1.0);
+  //definindo a cor de fundo do jogo : R,G,B,A
+  //gl.clearColor(0.1, 0.1, 0.1, 1.0); //fundo cinza bem escuro
+  gl.clearColor(0.97, 0.87, 0.94, 1.0); //fundo rosa claro conforme nossa inspiração
   gl.useProgram(program);
 
   return gl;
@@ -175,19 +320,44 @@ function configuraTudo() {
 function atualizaLogica(quantoPassou) {
   const distancia = playerSpeed * quantoPassou;
 
-  // pode andar com wasd ou com as setinhas
-  // if (keysPressed["ArrowUp"] || keysPressed["w"]) player.y -= distancia;
-  // if (keysPressed["ArrowDown"] || keysPressed["s"]) player.y += distancia;
+  // precisa sempre ao inicio de cada quadro verificar se o personagem está no chão
+  // entao assumi que ele sempre está no ar, caindo e quando colide com alguma plataforma ou o choa principal, ele da noChao = true
+  player.noChao = false;
+
+  // personagem volta pro chão
+  // ou seja, o personagem para no limite do canvas floor_Y e não continua descendo a página
+  // aqui é como se ele estivesse pisando em uma linha invisível. Tem que alterar
+
+  // personagem na plataforma
+  plataformas.forEach((plat) => {
+    const colidiuX = player.x + 25 > plat.x && player.x - 25 < plat.x + plat.largura;
+    const noTopo = player.y + 25 >= plat.y && player.y + 25 <= plat.y + 15;
+
+    if (colidiuX && noTopo && player.velocityY > 0) {
+      player.y = plat.y - 25;
+      player.velocityY = 0;
+      player.noChao = true;
+    }
+  });
+
+  if (player.y >= FLOOR_Y) {
+    player.y = FLOOR_Y;
+    player.velocityY = 0;
+    player.noChao = true;
+  }
 
   // pulo
-  if ((keysPressed[" "] || keysPressed["ArrowUp"] || keysPressed["w"]) && player.noChao) {
+  if (
+    (keysPressed[" "] || keysPressed["ArrowUp"] || keysPressed["w"]) &&
+    player.noChao
+  ) {
     player.velocityY = JUMP_FORCE;
     player.noChao = false;
   }
-  
-  // anda pra frente e pra tras
-  if (keysPressed["ArrowLeft"] || keysPressed["a"]) player.x -= distancia;
-  if (keysPressed["ArrowRight"] || keysPressed["d"]) player.x += distancia;
+
+  // pode andar com wasd ou com as setinhas
+  // if (keysPressed["ArrowUp"] || keysPressed["w"]) player.y -= distancia;
+  // if (keysPressed["ArrowDown"] || keysPressed["s"]) player.y += distancia;
 
   // gravidade e variavel Y
   if (!player.noChao) {
@@ -195,13 +365,9 @@ function atualizaLogica(quantoPassou) {
     player.y += player.velocityY * quantoPassou; // Atualiza a posição Y
   }
 
-  // personagem volta pro chão
-  if (player.y >= FLOOR_Y) {
-    player.y = FLOOR_Y;
-    player.velocityY = 0;
-    player.noChao = true;
-  }
-
+  // anda pra frente e pra tras
+  if (keysPressed["ArrowLeft"] || keysPressed["a"]) player.x -= distancia;
+  if (keysPressed["ArrowRight"] || keysPressed["d"]) player.x += distancia;
 
   // não deixa o personagem sair da tela que defini
   player.x = Math.max(25, Math.min(canvas.width - 25, player.x));
@@ -214,7 +380,37 @@ function desenhaCena(gl) {
   gl.viewport(0, 0, canvas.width, canvas.height);
   gl.clear(gl.COLOR_BUFFER_BIT);
 
+  //SOPHIA
+  // ===============================
+  // DESENHA O CHÃO
+  // ===============================
+
   gl.useProgram(program);
+  gl.bindVertexArray(groundVao);
+
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, groundTexture);
+
+  gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+
+  // Preenche o chão com tijolos até o final do canvas
+  for (let y = FLOOR_Y + 57; y < canvas.height + 32; y += 64) {
+    for (let x = 32; x < canvas.width + 32; x += 64) {
+      gl.uniform2f(playerPosLocation, x, y);
+
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    }
+  }
+
+  // desenha plataformas
+  gl.bindTexture(gl.TEXTURE_2D, groundTexture);
+  plataformas.forEach((plat, idx) => {
+    gl.bindVertexArray(plataformasVaos[idx]);
+    gl.uniform2f(playerPosLocation, plat.x, plat.y);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  });
+
+  // Desenha personagem
   gl.bindVertexArray(vao);
 
   // Ativa a unidade de textura 0 e liga a textura
