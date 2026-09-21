@@ -1,5 +1,5 @@
 /*
- 
+
 1. O básico que é desenhar um quadrado colorido na tela e conseguir mover ele com o teclado (ja foi dificil) ✅
  
 2. Trocar o quadrado por uma textura -> PNG qualquer ✅
@@ -8,6 +8,11 @@
  
 4. Ataque automático do personagem, cooldown, projétil, dano no inimigo mais próximo
 Quero ataque automatico *por enquanto*, se der tempo colocamos atque com M1
+ATAQUE COM MOUSE:
+SOPHIA: * o jogador pode usar o _mouse_ para dar "dedadas" no inimigo e subtrair alguns pontos de vida também,ao clicar neles.
+Isso é um evento específico chamado click:  https://www.w3schools.com/jsref/event_onclick.asp
+vídeo aula: https://www.youtube.com/watch?v=cjpQU6NutU0
+
  
 5. HUD — HP e pontuação na tela
  
@@ -56,13 +61,128 @@ const plataformas = [
 // Array que ira guardar o VAO de cada plataforma
 const plataformasVaos = [];
  
-// compila os shaders uma vez só
-function createShader(gl, type, source) {
-  const shader = gl.createShader(type);
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-  return shader;
+
+
+////////////////////////////////////////////////////////////////////////////////
+/********************************************************************************
+                                  TELAS E MENU
+**********************************************************************************/ 
+// CONTROLE DAS TELAS DO JOGO
+
+// Estado atual do jogo
+let gameState = "splash";
+
+// Telas
+const splashScreen = document.querySelector("#splashScreen");
+const menuScreen = document.querySelector("#menuScreen");
+const optionsScreen = document.querySelector("#optionsScreen");
+const creditsScreen = document.querySelector("#creditsScreen");
+const gameOverScreen = document.querySelector("#gameOverScreen");
+
+// Botões
+const playButton = document.querySelector("#playButton");
+const optionsButton = document.querySelector("#optionsButton");
+const creditsButton = document.querySelector("#creditsButton");
+const backOptionsButton = document.querySelector("#backOptionsButton");
+const backCreditsButton = document.querySelector("#backCreditsButton");
+const restartButton = document.querySelector("#restartButton");
+const menuButton = document.querySelector("#menuButton");
+
+//Opções
+const volumeSlider = document.querySelector("#volumeSlider");
+
+
+//Música do Menuzinho******
+//não consigo fazer a musica iniciar sem que haja uma interação do usuário. =(
+const menuMusic = new Audio("assets/audio/Celestial_Path.wav");
+menuMusic.loop = true;
+menuMusic.volume = Number(volumeSlider.value); // Começa em 50%, igual ao valor inicial do slider
+
+volumeSlider.addEventListener("input", () => {
+  menuMusic.volume = Number(volumeSlider.value);
+});
+// Se o navegador bloquear o autoplay, a primeira interação do usuário inicia a música
+document.addEventListener("click", () => {
+  if (gameState === "menu" && menuMusic.paused) {
+    menuMusic.play();
+  }
+});
+// fim
+
+// Esconde todas as telas
+function esconderTelas() {
+  splashScreen.classList.add("hidden");
+  menuScreen.classList.add("hidden");
+  optionsScreen.classList.add("hidden");
+  creditsScreen.classList.add("hidden");
+  gameOverScreen.classList.add("hidden");
 }
+
+// SPLASH SCREEN
+// Depois de 2 segundos, sai da splash e mostra o menu
+setTimeout(() => { 
+    esconderTelas();
+    menuScreen.classList.remove("hidden");
+    gameState = "menu";
+    menuMusic.play().catch(() => {
+       console.log("O navegador bloqueou o autoplay.");
+    });
+}, 2000);
+
+
+// TELA DE OPÇÕES
+optionsButton.addEventListener("click", () => {
+  esconderTelas();
+  optionsScreen.classList.remove("hidden");
+  gameState = "options";
+});
+backOptionsButton.addEventListener("click", () => {
+  esconderTelas();
+  menuScreen.classList.remove("hidden");
+  gameState = "menu";
+});
+// Volta para o menu principal
+
+
+//TELA DE CRÉDITOS
+creditsButton.addEventListener("click", () => {
+  esconderTelas();
+  creditsScreen.classList.remove("hidden");
+  gameState = "credits";
+});
+
+backCreditsButton.addEventListener("click", () => {
+  esconderTelas();
+  menuScreen.classList.remove("hidden");
+  gameState = "menu";
+});
+/****************************************************************************** */
+
+
+
+
+
+//ALTERAÇÃO SOPHIA:
+function createShader(gl, type, source) {
+  const shader = gl.createShader(type);
+
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    console.error(
+      "Erro ao compilar shader:",
+      gl.getShaderInfoLog(shader)
+    );
+
+    gl.deleteShader(shader);
+    return null;
+  }
+
+  return shader;
+}
+
+
  
 function configuraTudo() {
   canvas = document.querySelector("#glcanvas");
@@ -73,7 +193,7 @@ function configuraTudo() {
   window.addEventListener("keyup", (e) => (keysPressed[e.key] = false));
  
   // PERDIDINHA
-  const vsCode = `#version 300 es
+  /*const vsCode = `#version 300 es
     in vec2 a_position;
     in vec2 a_texcoord;
  
@@ -91,10 +211,31 @@ function configuraTudo() {
       gl_Position = vec4(clipSpace.x, -clipSpace.y, 0.0, 1.0);
       v_texcoord = a_texcoord;
     }
-  `;
+  `;*/ 
+
+//ALTERAÇÃO SOPHIA:
+const vsCode = `#version 300 es
+in vec2 a_position;
+in vec2 a_texcoord;
+
+uniform vec2 u_playerPos;
+uniform vec2 u_resolution;
+
+out vec2 v_texcoord;
+
+void main() {
+  vec2 position = a_position + u_playerPos;
+  vec2 zeroToOne = position / u_resolution;
+  vec2 zeroToTwo = zeroToOne * 2.0;
+  vec2 clipSpace = zeroToTwo - 1.0;
+
+  gl_Position = vec4(clipSpace.x, -clipSpace.y, 0.0, 1.0);
+  v_texcoord = a_texcoord;
+}
+`;
  
   // aplica a cor do pixel da textura
-  const fsCode = `#version 300 es
+  /*const fsCode = `#version 300 es
     precision highp float;
  
     in vec2 v_texcoord;
@@ -105,7 +246,22 @@ function configuraTudo() {
     void main() {
       outColor = texture(u_texture, v_texcoord);
     }
-  `;
+  `;*/ 
+
+//ALTERAÇÃO SOPHIA:
+const fsCode = `#version 300 es
+precision highp float;
+
+in vec2 v_texcoord;
+
+uniform sampler2D u_texture;
+
+out vec4 outColor;
+
+void main() {
+  outColor = texture(u_texture, v_texcoord);
+}
+`;
  
   const vs = createShader(gl, gl.VERTEX_SHADER, vsCode);
   const fs = createShader(gl, gl.FRAGMENT_SHADER, fsCode);
@@ -115,6 +271,13 @@ function configuraTudo() {
   gl.attachShader(program, vs);
   gl.attachShader(program, fs);
   gl.linkProgram(program);
+
+if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+  console.error(
+    "Erro ao linkar programa:",
+    gl.getProgramInfoLog(program)
+  );
+}
  
   // Vertices do quadrado do personagem (2 triângulos)
   const vertices = new Float32Array([
@@ -428,16 +591,18 @@ function desenhaCena(gl) {
 gl = configuraTudo();
 let logoAntes = 0;
  
+
 function loopPrincipal(agora) {
-  const quantoPassou = (agora - logoAntes) / 1000;
-  logoAntes = agora;
- 
-  if (gl) {
-    atualizaLogica(quantoPassou);
-    desenhaCena(gl);
-  }
- 
-  requestAnimationFrame(loopPrincipal);
+  const quantoPassou = (agora - logoAntes) / 1000;
+  logoAntes = agora;
+
+  if (gl) {
+    // Só atualiza personagem, gravidade etc. quando estiver jogando
+    if (gameState === "playing") {
+        atualizaLogica(quantoPassou);
+    }
+    desenhaCena(gl);
 }
- 
-requestAnimationFrame(loopPrincipal);
+  requestAnimationFrame(loopPrincipal); // agenda o próximo quadro e mantém o jogo rodando
+}
+requestAnimationFrame(loopPrincipal); //chamada inicial que inicia o loop

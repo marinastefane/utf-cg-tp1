@@ -1,16 +1,158 @@
-body {
+/* referência para esse bloco: 
+  1. Imagem ocupando a tela inteira com HTML e CSS (full screen)→ https://www.youtube.com/watch?v=hcNHuGol4WY 
+  2. A diferença entre largura: automática; e largura: 100% →  https://forsethingvild.medium.com/the-difference-between-width-auto-and-width-100-a58e2ac7832f
+  3. Proporção → https://web.dev/articles/aspect-ratio?hl=pt-br#aspect_ratio 
+  4. https://www.youtube.com/watch?v=hRf-Ol9Rl-8&list=PLclUTiUoLCbDHjxnd4FyliJuVeHS22pAK*/
+
+
+/*COLOCANDO A FONTE QUE ESCOLHI PARA O TÍTULO DO JOGO */
+/* https://www.fontspace.com/collection/cool-czo2n7y */
+@font-face {
+  font-family: "Monas";
+  src: url("assets/fonts/MonasDemoRegular-eZl86.ttf") format("truetype");
+}
+
+
+  body {
   margin: 0;
-
+  width: 100%;
+  height: 100%;
   background: #fff;
+  overflow: hidden;
+}
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  height: 100vh;
+/* Área que contém o jogo */
+.game-container {
+  position: relative;
+  width: 100vw; /* ter 100% da largura visível da janelinha */
+  height: 100vh;/* ter 100% da altura visível da janelinha */
+  
 }
 
 canvas {
-  background: #f58cf2;
-  border: 2px solid #6d0451;
+  display: block;
+  width: 100vw; /* ter 100% da largura visível da janelinha */
+  height: 100vh;/* ter 100% da altura visível da janelinha */
+  background: #f58cf2; /* fundo rosa */
+}
+
+/* Tela sobre o jogo */
+.screen {
+  font-family: "Monas", sans-serif;
+  color: #b10b7f;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(248, 221, 240, 0.95);
+  z-index: 10;
+}
+
+
+/***************************************************************************
+                              SPLASH SCREEN - FONTES 
+****************************************************************************/
+.screen h1 {
+  /* TÍTULO DO JOGO BEM LINDO, ROSA E GRANDE*/
+  font-size: 150px;
+  font-family: "Monas", sans-serif;
+  color: #9c167d;
+}
+
+.screen p {
+  /* AVISO "CARREGANDO", BEM LINDO E ROSA*/
+  font-size: 45px;
+  font-family: "Monas", sans-serif;
+  color: #9c167d;
+}
+
+/* **********************************************************************
+                        PARA OS BOTÕES DA SPLASH SCREEN
+*************************************************************************/
+/* NÃO QUERO QUE OS BOTÕES PAREÇAM BOTÕES*/ 
+.screen button {
+  font-family: "Monas", sans-serif;
+  font-size: 45px;
+  color: #b10b7f;
+  background: transparent; /* FUNDO TRANSPARENTE */
+  border: none; /* SEM BORDA */
+  padding: 10px 20px;
+  margin: 6px;
+  cursor: pointer; 
+  
+} 
+
+/**************************************************************************
+                                  PARA OS CRÉDITOS 
+***************************************************************************/
+#creditsScreen h2 {
+  font-size: 55px;
+  color: #9c167d;
+}
+
+.credits-content h3 {
+  font-size: 28px;
+  color: #b10b7f;
+  margin-top: 25px;
+  margin-bottom: 8px;
+}
+
+.credits-content {
+  width: min(700px, 80vw);
+  max-height: 60vh;
+  overflow-y: auto;
+  text-align: center;
+}
+
+.credits-content p {
+  font-size: 25px;
+  margin: 5px 0;
+}
+
+/*******************************************************************************
+                                 VOLUME - OPÇÕES
+*********************************************************************************/
+#optionsScreen h2 {
+  font-size: 55px;
+  color: #9c167d;
+  margin-bottom: 35px;
+}
+
+#optionsScreen label {
+  /* a barrinha de volume */
+  font-size: 35px;
+  margin-bottom: 10px;
+}
+
+#volumeSlider {
+  /* a barrinha de volume */
+  width: 500px;
+}
+
+/* Botão separado das configurações */
+#backOptionsButton {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+
+
+/********************************************************
+                         OUTROS
+**********************************************************/
+/* h2 para outras telas */
+.screen h2 {
+  font-size: 45px;
+}
+
+/* Esconde uma tela */
+.hidden {
+  display: none;
 }
