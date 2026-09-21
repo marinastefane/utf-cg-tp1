@@ -49,7 +49,7 @@ canvas {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: rgba(248, 221, 240, 0.95);
+  background: rgba(248, 221, 240, 1);
   z-index: 10;
 }
 
@@ -124,17 +124,46 @@ canvas {
 }
 
 #optionsScreen label {
-  /* a barrinha de volume */
-  font-size: 35px;
+ font-size: 35px;
   margin-bottom: 10px;
 }
 
-#volumeSlider {
-  /* a barrinha de volume */
+ /* a barrinha de volume chama  slider e tem duas partes: track → a barrinha comprida | thumb → a bolinha que você arrasta*/
+#volumeSlider { 
   width: 500px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
 }
 
-/* Botão separado das configurações */
+
+/* BARRINHA  ESTILIZADAAAA*/
+#volumeSlider::-webkit-slider-runnable-track {
+  height: 40px;
+  background: #f2b9df;
+  border: 2px solid #9c167d;
+  border-radius: 20px;
+}
+
+
+/* BOLINHAAAAA */
+#volumeSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 34px;
+  height: 34px;
+  background: #9c167d;
+  border: 3px solid #f8ddef;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: 1px;
+}
+
+
+
+
+/* botão */
 #backOptionsButton {
   position: absolute;
   bottom: 40px;

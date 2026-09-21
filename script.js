@@ -129,6 +129,14 @@ setTimeout(() => {
     });
 }, 2000);
 
+//TELA DE JOGOS
+playButton.addEventListener("click", () => {
+  esconderTelas();// Esconde menu, opções, créditos etc.
+  gameState = "playing";  // Inicia o jogo
+  // Para a música do menu
+  menuMusic.pause();
+  menuMusic.currentTime = 0;
+});
 
 // TELA DE OPÇÕES
 optionsButton.addEventListener("click", () => {
@@ -156,11 +164,9 @@ backCreditsButton.addEventListener("click", () => {
   menuScreen.classList.remove("hidden");
   gameState = "menu";
 });
-/****************************************************************************** */
-
-
-
-
+/****************************************************************************** 
+       FIM DA PARTE DO MENU 
+********************************************************************************/
 
 //ALTERAÇÃO SOPHIA:
 function createShader(gl, type, source) {
@@ -544,17 +550,15 @@ function desenhaCena(gl) {
   gl.clear(gl.COLOR_BUFFER_BIT);
  
   //SOPHIA
-  // ===============================
-  // DESENHA O CHÃO
-  // ===============================
+  // ==========================================
+  // DESENHA O CHÃO DE TIJOLINHOS ROSAAA
+  // ==========================================
  
   gl.useProgram(program);
   gl.bindVertexArray(groundVao);
- 
-  gl.activeTexture(gl.TEXTURE0);
+  gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, groundTexture);
- 
-  gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+  gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
  
   // Preenche o chão com tijolos até o final do canvas
   for (let y = FLOOR_Y + 57; y < canvas.height + 32; y += 64) {
