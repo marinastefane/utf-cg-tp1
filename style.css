@@ -5,7 +5,7 @@
   4. https://www.youtube.com/watch?v=hRf-Ol9Rl-8&list=PLclUTiUoLCbDHjxnd4FyliJuVeHS22pAK*/
 
 
-/*COLOCANDO A FONTE QUE ESCOLHI PARA O TÍTULO DO JOGO */
+/*COLOCANDO A FONTE QUE ESCOLHEMOS PARA O TÍTULO DO JOGO */
 /* https://www.fontspace.com/collection/cool-czo2n7y */
 @font-face {
   font-family: "Monas";
@@ -28,6 +28,7 @@
   height: 100vh;/* ter 100% da altura visível da janelinha */
   
 }
+
 
 canvas {
   display: block;
@@ -84,7 +85,7 @@ canvas {
   padding: 10px 20px;
   margin: 6px;
   cursor: pointer; 
-  
+
 } 
 
 /**************************************************************************
@@ -111,7 +112,7 @@ canvas {
 
 .credits-content p {
   font-size: 25px;
-  margin: 5px 0;
+  margin: 5px;
 }
 
 /*******************************************************************************
@@ -159,8 +160,6 @@ canvas {
   cursor: pointer;
   margin-top: 1px;
 }
-
-
 
 
 /* botão */

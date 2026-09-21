@@ -11,25 +11,30 @@
   <div class="game-container">
   <canvas id="glcanvas" width="800" height="600"></canvas>
   
+    <!-- *********************************************************************************  -->
+    <!--                                     TELA INICIAL                                   -->
+    <!-- *********************************************************************************  -->
     <!-- SPLASH SCREEN -->
     <div id="splashScreen" class="screen">
       <h1>The Odyssey</h1>  <!-- NOME DO JOGO -->
-      <p>Carregando...</p>
+      <p>Carregando...</p>  <!-- indica para o usuário que a página está carregando -->
     </div>
 
 
     <!-- MENU PRINCIPAL -->
     <div id="menuScreen" class="screen hidden">
       <h1>The Odyssey</h1><!-- NOME DO JOGO -->
-      <button id="playButton">Jogar</button>
-      <button id="optionsButton">Opções</button>
-      <button id="creditsButton">Créditos</button>
-</div>
+      <button id="playButton">Jogar</button> <!-- BOTÃO JOGAR -->
+      <button id="optionsButton">Opções</button> <!-- BOTÃO OPÇÕES (INICIALMENTE APENAS VOLUME) -->
+      <button id="creditsButton">Créditos</button> <!-- BOTÃO PARA ACESSAR OS CRÉDITOS -->
+    </div>
 
 
-    <!-- OPÇÕES -->
-  <div id="optionsScreen" class="screen hidden">
-      <h2>Volume</h2>
+    <!-- *********************************************************************************  -->
+    <!--                              TELA OPÇÕES | VOLUME                                  -->
+    <!-- *********************************************************************************  -->
+    <div id="optionsScreen" class="screen hidden">
+      <h2>Volume</h2> <!-- TÍTULO DA PÁGINA/FUNCIONALIDADE  -->
       <h2></h2>
       <input
       id="volumeSlider"
@@ -37,55 +42,57 @@
       min="0" 
       max="1"
       step="0.1"
-      value="0.0"
+      value="0.5"
     /> <!-- 0 = sem som | 0.5 = 50% | 1 = 100% | subindo a cada 0.1 degrau de volume -->
-    <button id="backOptionsButton">Voltar</button>
-  </div>
-
-    
+    <button id="backOptionsButton">Voltar</button> <!-- BOTÃO VOLTAR | VOLTA PARA A TELA INICIAL -->
+    </div>
 
 
-    <!-- CRÉDITOS -->
+    <!-- *********************************************************************************  -->
+    <!--                                     TELA CRÉDITOS                                  -->
+    <!-- *********************************************************************************  -->
     <div id="creditsScreen" class="screen hidden">
-      <h2>Créditos:</h2>
+      <h2>Créditos:</h2>  <!-- TÍTULO DA PÁGINA -->
 
     <div class="credits-content">
 
-    <h3>Desenvolvido por: </h3>
-    <p>Sophia Silva e Marina Stefane</p>
+    <h3>Desenvolvido por: </h3> <!-- AUTORAS DO JOGO -->
+    <p>Sophia Silva e Marina Delfino</p>
     
-    <h3>Fonte</h3>
+    <h3>Fonte</h3> <!-- DADOS DA FONTE USADA -->
     <p>Monas Demo Regular</p>
     <p>Designer: Suandana</P>
     <p>Licença: Personal Use</p>
     <p>Link: https://www.fontspace.com/monas-font-f84531</p>
     <p> </p>
 
-    <h3>Música - Menu</h3>
+    <h3>Música - Menu</h3> <!-- DADOS DA MUSICA USADA NO MENU -->
     <p>Celestial Path</p>
     <p>Composição: AlkaKrab</p>
     <p>Licença: Royalty-Free</p>
     <p>Link: https://alkakrab.itch.io/free-12-jrpg-fantasy-tracks-game-music-pack</p>
 
-    <h3>Arte e cenário</h3>
+    <h3>Arte e cenário</h3><!-- QUEM FEZ OS CENÁRIOS QUE USAMOS? -->
     <p> Adicionar aqui autor e origem </p>
 
-    <h3>Personagens</h3>
+    <h3>Personagens</h3> <!-- QUEM FEZ OS PERSONAGENS QUE USAMOS? -->
     <p> Adicionar aqui o autor e a origem.</p>
   </div>
 
-  <button id="backCreditsButton">Voltar</button>
-</div>
+  <button id="backCreditsButton">Voltar</button><!-- BOTÃO VOLTAR | VOLTA PARA A TELA INICIAL -->
+  </div>
 
-    
-    <!-- GAME OVER -->
+  
+    <!-- *********************************************************************************  -->
+    <!--                                     TELA GAME OVER                                 -->
+    <!-- *********************************************************************************  -->  
     <div id="gameOverScreen" class="screen hidden">
-      <h1>Game Over</h1>
+      <h1>Game Over</h1>  <!-- TÍTULO DA PÁGINA  -->
 
-      <p id="finalScore">Pontuação: 0</p>
+      <p id="finalScore">Pontuação: 0</p> <!-- TÍTULO DA FUNCIONALIDADE: APRESENTAR A PONTUAÇÃO -->
 
-      <button id="restartButton">Jogar novamente</button>
-      <button id="menuButton">Menu principal</button>
+      <button id="restartButton">Jogar novamente</button> <!-- BOTÃO DE REINÍCIO/RESTART -->
+      <button id="menuButton">Menu principal</button> <!-- BOTÃO MENU - VOLTA PARA A TELA DO MENU INICIAL -->
     </div>
 
 
