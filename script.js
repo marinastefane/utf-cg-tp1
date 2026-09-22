@@ -82,6 +82,7 @@ const gameOverScreen = document.querySelector("#gameOverScreen");
 const playButton = document.querySelector("#playButton");
 const optionsButton = document.querySelector("#optionsButton");
 const creditsButton = document.querySelector("#creditsButton");
+const fullscreenButton =   document.querySelector("#fullscreenButton");
 const backOptionsButton = document.querySelector("#backOptionsButton");
 const backCreditsButton = document.querySelector("#backCreditsButton");
 const restartButton = document.querySelector("#restartButton");
@@ -106,7 +107,21 @@ document.addEventListener("click", () => {
     menuMusic.play();
   }
 });
+
+//Tela cheia 
+fullscreenButton.addEventListener("click", () => {
+  const gameContainer =
+    document.querySelector(".game-container");
+
+  if (!document.fullscreenElement) {
+    gameContainer.requestFullscreen();
+} else {
+    document.exitFullscreen();
+  }
+});
 // fim
+
+
 
 // Esconde todas as telas
 function esconderTelas() {
