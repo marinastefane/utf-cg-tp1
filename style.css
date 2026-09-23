@@ -4,14 +4,12 @@
   3. Proporção → https://web.dev/articles/aspect-ratio?hl=pt-br#aspect_ratio 
   4. https://www.youtube.com/watch?v=hRf-Ol9Rl-8&list=PLclUTiUoLCbDHjxnd4FyliJuVeHS22pAK*/
 
-
 /*COLOCANDO A FONTE QUE ESCOLHEMOS PARA O TÍTULO DO JOGO */
 /* https://www.fontspace.com/collection/cool-czo2n7y */
 @font-face {
   font-family: "Monas";
   src: url("assets/fonts/MonasDemoRegular-eZl86.ttf") format("truetype");
 }
-
 
 body {
   margin: 0;
@@ -24,7 +22,18 @@ body {
   justify-content: center;
   align-items: center;
   background: #f8ddef;
-  overflow: hidden
+  overflow: hidden;
+}
+
+/* Área que contém o jogo */
+.game-container {
+  position: relative;
+  width: min(100vw, calc(100vh * 4 / 3));
+  height: min(100vh, calc(100vw * 3 / 4));
+  aspect-ratio: 4 / 3;
+  /* definimos a nossa tela como 800 x 600 e vamos manter o padrão 4:28 */
+  /*nesse bloco: o jogo pode crescer ou diminuir visualmente, mas sempre conserva a nossa proporção */
+  overflow: hidden;
 }
 
 /* Área que contém o jogo */
@@ -37,11 +46,10 @@ body {
   /*nesse bloco: o jogo pode crescer ou diminuir visualmente, mas sempre conserva a nossa proporção */
 }
 
-
 canvas {
   display: block;
   width: 100%; /* ter 100% da largura visível da janelinha */
-  height: 100%;/* ter 100% da altura visível da janelinha */
+  height: 100%; /* ter 100% da altura visível da janelinha */
   background: #f58cf2; /* fundo rosa */
   image-rendering: pixelated;
 }
@@ -63,7 +71,6 @@ canvas {
   z-index: 10;
   box-sizing: border-box;
 }
-
 
 /***************************************************************************
                               SPLASH SCREEN 
@@ -97,7 +104,7 @@ canvas {
 /* **********************************************************************
                         PARA OS BOTÕES DA SPLASH SCREEN
 *************************************************************************/
-/* NÃO QUERO QUE OS BOTÕES PAREÇAM BOTÕES*/ 
+/* NÃO QUERO QUE OS BOTÕES PAREÇAM BOTÕES*/
 .screen button {
   font-family: "Monas", sans-serif;
   font-size: 45px;
@@ -106,8 +113,8 @@ canvas {
   border: none; /* SEM BORDA */
   padding: 10px 20px;
   margin: 6px;
-  cursor: pointer; 
-} 
+  cursor: pointer;
+}
 
 /* Sobe um pouco os botões do menu principal */
 #menuScreen button {
@@ -151,19 +158,18 @@ canvas {
 }
 
 #optionsScreen label {
- font-size: 35px;
+  font-size: 35px;
   margin-bottom: 10px;
 }
 
- /* a barrinha de volume chama  slider e tem duas partes: track → a barrinha comprida | thumb → a bolinha que você arrasta*/
-#volumeSlider { 
+/* a barrinha de volume chama  slider e tem duas partes: track → a barrinha comprida | thumb → a bolinha que você arrasta*/
+#volumeSlider {
   width: 500px;
   -webkit-appearance: none;
   appearance: none;
   background: transparent;
   cursor: pointer;
 }
-
 
 /* BARRINHA  ESTILIZADAAAA*/
 #volumeSlider::-webkit-slider-runnable-track {
@@ -172,7 +178,6 @@ canvas {
   border: 2px solid #9c167d;
   border-radius: 20px;
 }
-
 
 /* BOLINHAAAAA */
 #volumeSlider::-webkit-slider-thumb {
@@ -187,7 +192,6 @@ canvas {
   margin-top: 1px;
 }
 
-
 /* botão */
 #backOptionsButton {
   position: absolute;
@@ -195,8 +199,6 @@ canvas {
   left: 50%;
   transform: translateX(-50%);
 }
-
-
 
 /********************************************************
                          OUTROS
