@@ -25,23 +25,6 @@ vídeo aula: https://www.youtube.com/watch?v=cjpQU6NutU0
 
 // SEÇÃO 01 - VARIAVEIS GLOBAIS E CONFIGURAÇÕES DO JOGO
 
-// Essas variaveis são criadas no configuraTudo e usadas no desenhaCena
-let gl;
-let program;
-let vao;
-let playerPosLocation;
-let resolutionLocation;
-let canvas;
-let playerTexcoordBuffer;
-let groundTexture;
-let groundVao;
-let inimigoVao;
-let inimigoTexture;
-let inimigoTexcoordBuffer;
-let ataqueInimigoVao;
-let ataqueTexture;
-let ataqueTexcoordBuffer;
-
 // Configurações e estado do jogo
 // precisa colocar gravidade (?) e verificar se ela está ou não n chão
 const player = { x: 400, y: 500, velocityY: 0, noChao: true, hp: 100 };
@@ -68,6 +51,23 @@ const playerSprite = {
 //   timer: 0,
 //   terminou: false,
 // };
+
+// Essas variaveis são criadas no configuraTudo e usadas no desenhaCena
+let gl;
+let program;
+let vao;
+let playerPosLocation;
+let resolutionLocation;
+let canvas;
+let playerTexcoordBuffer;
+let groundTexture;
+let groundVao;
+let inimigoVao;
+let inimigoTexture;
+let inimigoTexcoordBuffer;
+let ataqueInimigoVao;
+let ataqueTexture;
+let ataqueTexcoordBuffer;
 
 // plataformas do cenario
 // ordem de cima pra baixo da esquerda pra direita
@@ -501,9 +501,6 @@ function spawnAtaqueInimigo(inimigo) {
 function configuraTudo() {
   canvas = document.querySelector("#glcanvas");
   gl = canvas.getContext("webgl2");
-
-  // const metadeLarguraa = canvas.width / 2;
-  // console.log(metadeLarguraa);
 
   // Input do teclado
   window.addEventListener("keydown", (e) => (keysPressed[e.key] = true));
@@ -1112,6 +1109,8 @@ function atualizaLogica(quantoPassou) {
       ataque.timer = 0;
       if (ataque.frameAtual < spriteAtaque.totalColunas - 1) {
         ataque.frameAtual++;
+      } else if (spriteAtaque.loop) {
+        ataque.frameAtual = 0;
       }
     }
 

@@ -33,6 +33,17 @@ body {
   aspect-ratio: 4 / 3;
   /* definimos a nossa tela como 800 x 600 e vamos manter o padrão 4:28 */
   /*nesse bloco: o jogo pode crescer ou diminuir visualmente, mas sempre conserva a nossa proporção */
+  overflow: hidden;
+}
+
+/* Área que contém o jogo */
+.game-container {
+  position: relative;
+  width: min(100vw, calc(100vh * 4 / 3));
+  height: min(100vh, calc(100vw * 3 / 4));
+  aspect-ratio: 4 / 3;
+  /* definimos a nossa tela como 800 x 600 e vamos manter o padrão 4:28 */
+  /*nesse bloco: o jogo pode crescer ou diminuir visualmente, mas sempre conserva a nossa proporção */
 }
 
 canvas {
