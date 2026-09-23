@@ -77,6 +77,7 @@ const menuScreen = document.querySelector("#menuScreen");
 const optionsScreen = document.querySelector("#optionsScreen");
 const creditsScreen = document.querySelector("#creditsScreen");
 const gameOverScreen = document.querySelector("#gameOverScreen");
+const menuCharacter = document.querySelector("#menuCharacter");
 
 // Botões
 const playButton = document.querySelector("#playButton");
@@ -110,12 +111,9 @@ document.addEventListener("click", () => {
 
 //Tela cheia 
 fullscreenButton.addEventListener("click", () => {
-  const gameContainer =
-    document.querySelector(".game-container");
-
   if (!document.fullscreenElement) {
-    gameContainer.requestFullscreen();
-} else {
+    document.documentElement.requestFullscreen();
+  } else {
     document.exitFullscreen();
   }
 });
@@ -137,6 +135,7 @@ function esconderTelas() {
 setTimeout(() => { 
     esconderTelas();
     menuScreen.classList.remove("hidden");
+    menuCharacter.classList.remove("hidden");
     gameState = "menu";
     menuMusic.play().catch(() => {
        console.log("O navegador bloqueou o autoplay.");
@@ -146,21 +145,24 @@ setTimeout(() => {
 //TELA DE JOGOS
 playButton.addEventListener("click", () => {
   esconderTelas();// Esconde menu, opções, créditos etc.
+  menuCharacter.classList.add("hidden");
   gameState = "playing";  // Inicia o jogo
   // Para a música do menu
-  menuMusic.pause();
-  menuMusic.currentTime = 0;
+  //menuMusic.pause();
+  //menuMusic.currentTime = 0;
 });
 
 // TELA DE OPÇÕES
 optionsButton.addEventListener("click", () => {
   esconderTelas();
+  menuCharacter.classList.add("hidden");
   optionsScreen.classList.remove("hidden");
   gameState = "options";
 });
 backOptionsButton.addEventListener("click", () => {
   esconderTelas();
   menuScreen.classList.remove("hidden");
+  menuCharacter.classList.remove("hidden");
   gameState = "menu";
 });
 // Volta para o menu principal
@@ -169,6 +171,7 @@ backOptionsButton.addEventListener("click", () => {
 //TELA DE CRÉDITOS
 creditsButton.addEventListener("click", () => {
   esconderTelas();
+  menuCharacter.classList.add("hidden");
   creditsScreen.classList.remove("hidden");
   gameState = "credits";
 });
@@ -176,6 +179,7 @@ creditsButton.addEventListener("click", () => {
 backCreditsButton.addEventListener("click", () => {
   esconderTelas();
   menuScreen.classList.remove("hidden");
+  menuCharacter.classList.add("hidden");
   gameState = "menu";
 });
 /****************************************************************************** 
