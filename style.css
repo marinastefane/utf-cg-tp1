@@ -1,16 +1,191 @@
+/* referência para esse bloco: 
+  1. Imagem ocupando a tela inteira com HTML e CSS (full screen)→ https://www.youtube.com/watch?v=hcNHuGol4WY 
+  2. A diferença entre largura: automática; e largura: 100% →  https://forsethingvild.medium.com/the-difference-between-width-auto-and-width-100-a58e2ac7832f
+  3. Proporção → https://web.dev/articles/aspect-ratio?hl=pt-br#aspect_ratio 
+  4. https://www.youtube.com/watch?v=hRf-Ol9Rl-8&list=PLclUTiUoLCbDHjxnd4FyliJuVeHS22pAK*/
+
+/*COLOCANDO A FONTE QUE ESCOLHEMOS PARA O TÍTULO DO JOGO */
+/* https://www.fontspace.com/collection/cool-czo2n7y */
+@font-face {
+  font-family: "Monas";
+  src: url("assets/fonts/MonasDemoRegular-eZl86.ttf") format("truetype");
+}
+
 body {
   margin: 0;
+  width: 100%;
+  height: 100%;
+}
 
-  background: #fff;
-
+body {
   display: flex;
   justify-content: center;
   align-items: center;
+  background: #f8ddef;
+  overflow: hidden;
+}
 
-  height: 100vh;
+/* Área que contém o jogo */
+.game-container {
+  position: relative;
+  width: min(100vw, calc(100vh * 4 / 3));
+  height: min(100vh, calc(100vw * 3 / 4));
+  aspect-ratio: 4 / 3;
+  /* definimos a nossa tela como 800 x 600 e vamos manter o padrão 4:28 */
+  /*nesse bloco: o jogo pode crescer ou diminuir visualmente, mas sempre conserva a nossa proporção */
 }
 
 canvas {
-  background: #f58cf2;
-  border: 2px solid #6d0451;
+  display: block;
+  width: 100%; /* ter 100% da largura visível da janelinha */
+  height: 100%; /* ter 100% da altura visível da janelinha */
+  background: #f58cf2; /* fundo rosa */
+  image-rendering: pixelated;
+}
+
+/* Tela sobre o jogo */
+.screen {
+  font-family: "Monas", sans-serif;
+  color: #b10b7f;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #f8ddef;
+  z-index: 10;
+  box-sizing: border-box;
+}
+
+/***************************************************************************
+                              SPLASH SCREEN - FONTES 
+****************************************************************************/
+.screen h1 {
+  /* TÍTULO DO JOGO BEM LINDO, ROSA E GRANDE*/
+  font-size: 150px;
+  font-family: "Monas", sans-serif;
+  color: #9c167d;
+}
+
+.screen p {
+  /* AVISO "CARREGANDO", BEM LINDO E ROSA*/
+  font-size: 45px;
+  font-family: "Monas", sans-serif;
+  color: #9c167d;
+}
+
+/* **********************************************************************
+                        PARA OS BOTÕES DA SPLASH SCREEN
+*************************************************************************/
+/* NÃO QUERO QUE OS BOTÕES PAREÇAM BOTÕES*/
+.screen button {
+  font-family: "Monas", sans-serif;
+  font-size: 45px;
+  color: #b10b7f;
+  background: transparent; /* FUNDO TRANSPARENTE */
+  border: none; /* SEM BORDA */
+  padding: 10px 20px;
+  margin: 6px;
+  cursor: pointer;
+}
+
+/* Sobe um pouco os botões do menu principal */
+#menuScreen button {
+  transform: translateY(-65px);
+}
+
+/**************************************************************************
+                                  PARA OS CRÉDITOS 
+***************************************************************************/
+#creditsScreen h2 {
+  font-size: 55px;
+  color: #9c167d;
+}
+
+.credits-content h3 {
+  font-size: 28px;
+  color: #b10b7f;
+  margin-top: 25px;
+  margin-bottom: 8px;
+}
+
+.credits-content {
+  width: min(700px, 80vw);
+  max-height: 60vh;
+  overflow-y: auto;
+  text-align: center;
+}
+
+.credits-content p {
+  font-size: 25px;
+  margin: 5px;
+}
+
+/*******************************************************************************
+                                 VOLUME - OPÇÕES
+*********************************************************************************/
+#optionsScreen h2 {
+  font-size: 55px;
+  color: #9c167d;
+  margin-bottom: 35px;
+}
+
+#optionsScreen label {
+  font-size: 35px;
+  margin-bottom: 10px;
+}
+
+/* a barrinha de volume chama  slider e tem duas partes: track → a barrinha comprida | thumb → a bolinha que você arrasta*/
+#volumeSlider {
+  width: 500px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* BARRINHA  ESTILIZADAAAA*/
+#volumeSlider::-webkit-slider-runnable-track {
+  height: 40px;
+  background: #f2b9df;
+  border: 2px solid #9c167d;
+  border-radius: 20px;
+}
+
+/* BOLINHAAAAA */
+#volumeSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 34px;
+  height: 34px;
+  background: #9c167d;
+  border: 3px solid #f8ddef;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: 1px;
+}
+
+/* botão */
+#backOptionsButton {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/********************************************************
+                         OUTROS
+**********************************************************/
+/* h2 para outras telas */
+.screen h2 {
+  font-size: 45px;
+}
+
+/* Esconde uma tela */
+.hidden {
+  display: none;
 }
