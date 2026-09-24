@@ -36,16 +36,6 @@ body {
   overflow: hidden;
 }
 
-/* Área que contém o jogo */
-.game-container {
-  position: relative;
-  width: min(100vw, calc(100vh * 4 / 3));
-  height: min(100vh, calc(100vw * 3 / 4));
-  aspect-ratio: 4 / 3;
-  /* definimos a nossa tela como 800 x 600 e vamos manter o padrão 4:28 */
-  /*nesse bloco: o jogo pode crescer ou diminuir visualmente, mas sempre conserva a nossa proporção */
-}
-
 canvas {
   display: block;
   width: 100%; /* ter 100% da largura visível da janelinha */
@@ -73,13 +63,14 @@ canvas {
 }
 
 /***************************************************************************
-                              SPLASH SCREEN - FONTES 
+                              SPLASH SCREEN 
 ****************************************************************************/
 .screen h1 {
   /* TÍTULO DO JOGO BEM LINDO, ROSA E GRANDE*/
   font-size: 150px;
   font-family: "Monas", sans-serif;
   color: #9c167d;
+  text-shadow: 3px 3px 0 #f3afd8;
 }
 
 .screen p {
@@ -87,6 +78,17 @@ canvas {
   font-size: 45px;
   font-family: "Monas", sans-serif;
   color: #9c167d;
+}
+
+/* COLOCANDO FOTO DA PERSONAGEM*/
+#menuCharacter {
+  position: fixed;
+  left: 200px;
+  top: 180px;
+  width: 300px;
+  height: 500px;
+  image-rendering: pixelated;
+  z-index: 20;
 }
 
 /* **********************************************************************
@@ -99,6 +101,7 @@ canvas {
   color: #b10b7f;
   background: transparent; /* FUNDO TRANSPARENTE */
   border: none; /* SEM BORDA */
+  border-radius: 15px;
   padding: 10px 20px;
   margin: 6px;
   cursor: pointer;
@@ -109,6 +112,10 @@ canvas {
   transform: translateY(-65px);
 }
 
+#menuScreen button:hover {
+  background: #f2acd8;
+  transform: translateY(-65px) scale(1.05);
+}
 /**************************************************************************
                                   PARA OS CRÉDITOS 
 ***************************************************************************/
@@ -136,6 +143,10 @@ canvas {
   margin: 5px;
 }
 
+#backCreditsButton:hover {
+  background: #f2acd8;
+  transform: scale(1.05);
+}
 /*******************************************************************************
                                  VOLUME - OPÇÕES
 *********************************************************************************/
@@ -258,6 +269,56 @@ canvas {
   margin-left: 210px;
   font-size: 18px;
   font-weight: bold;
+}
+#backOptionsButton:hover {
+  background: #f2acd8;
+  transform: translateX(-50%) scale(1.05);
+}
+/*******************************************************************************
+                                 GAME OVER
+*********************************************************************************/
+
+/* TÍTULO GAME OVER */
+#gameOverScreen h1 {
+  font-size: 95px;
+  color: #9c167d;
+  margin: 0 0 25px 0;
+  line-height: 1;
+}
+
+/* PONTUAÇÃO FINAL */
+#gameOverScreen #finalScore {
+  font-size: 34px;
+  color: #a3197e;
+  margin: 0 0 35px 0;
+}
+
+/* BOTÕES DA TELA DE GAME OVER */
+#gameOverScreen button {
+  font-size: 45px;
+  color: #9c167d;
+  background: transparent; /* FUNDO TRANSPARENTE */
+  border: none; /* SEM BORDA */
+  border-radius: 15px;
+  min-width: 330px;
+
+  padding: 12px 30px;
+  margin: 5px;
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
+}
+
+/* EFEITO QUANDO PASSAR O MOUSE */
+#gameOverScreen button:hover {
+  background: #f2acd8;
+  transform: scale(1.05);
+}
+
+/* EFEITO QUANDO CLICAR */
+#gameOverScreen button:active {
+  transform: scale(0.97);
 }
 
 /********************************************************

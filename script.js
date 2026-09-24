@@ -29,11 +29,13 @@ vídeo aula: https://www.youtube.com/watch?v=cjpQU6NutU0
 const PODER_MAX = 50;
 const PODER_TEMPO_PARA_CHEIO = 30;
 
+// Essas variaveis são criadas no configuraTudo e usadas no desenhaCena
 let gl;
 let program;
 let vao;
 let playerPosLocation;
 let resolutionLocation;
+//let rotationLocation; // PRA PODER ROTACIONAR
 let canvas;
 let playerTexcoordBuffer;
 let groundTexture;
@@ -44,7 +46,8 @@ let inimigoTexcoordBuffer;
 let ataqueInimigoVao;
 let ataqueTexture;
 let ataqueTexcoordBuffer;
-let tempoVida;
+//let espadaVao;
+//let espadaTexture;
 
 // Configurações e estado do jogo
 // precisa colocar gravidade (?) e verificar se ela está ou não n chão
@@ -248,6 +251,7 @@ const spriteAtaque = {
 
 const inimigos = [];
 let ataqueInimigo = [];
+//let projeteisEspada = [];// espadas lançadas pela personagem como um projétil
 
 const configInimigos = {
   chao: {
@@ -265,6 +269,13 @@ const configInimigos = {
   // }
 };
 
+//Dano causado quando o jogador clica no inimigo
+//PENSAMENTO INICIAL: cada clique no inimigo tira 1 de vida; quando chegar a 0, ele desaparece.
+//Se der certo, mantenhamos o básico para o TP1?
+const DANO_DEDADA = 1;
+// Dano causado pelo ataque corpo a corpo da personagem (COM A ESPADA)
+const DANO_ESPADA = 1;
+
 const configAtaqueInimigos = {
   largura: 10,
   altura: 10,
@@ -276,7 +287,11 @@ const configAtaqueInimigos = {
 const spawn = 3; // vai aparecer um inimigo no chao a cada 3 segundos
 let spawnTimer = 0;
 let ataqueTimer = 0;
+let score = 0; // Pontuação atual da partida
+let gameOverAtivado = false; // Impede abrir o Game Over várias vezes
+let somMorteTocado = false; // Impede tocar o som de morte várias vezes
 
+/**********************************************************************/
 // SEÇÃO 02 - TELAS E MENU - CONTROLE DAS TELAS DO JOGO
 // Estado atual do jogo
 let gameState = "splash";
@@ -287,6 +302,8 @@ const menuScreen = document.querySelector("#menuScreen");
 const optionsScreen = document.querySelector("#optionsScreen");
 const creditsScreen = document.querySelector("#creditsScreen");
 const gameOverScreen = document.querySelector("#gameOverScreen");
+const finalScore = document.querySelector("#finalScore"); // Captura o final score
+const menuCharacter = document.querySelector("#menuCharacter");
 
 // Botões
 const playButton = document.querySelector("#playButton");
@@ -295,7 +312,7 @@ const creditsButton = document.querySelector("#creditsButton");
 const fullscreenButton = document.querySelector("#fullscreenButton");
 const backOptionsButton = document.querySelector("#backOptionsButton");
 const backCreditsButton = document.querySelector("#backCreditsButton");
-const restartButton = document.querySelector("#restartButton");
+const restartButton = document.querySelector("#restartButton"); //BOTÃO DE REINÍCIO
 const menuButton = document.querySelector("#menuButton");
 
 // Opções
@@ -314,10 +331,19 @@ const scorePowerDisplay = document.querySelector("#scorePower");
 const menuMusic = new Audio("assets/audio/Celestial Path.wav");
 menuMusic.loop = true;
 menuMusic.volume = Number(volumeSlider.value); // Começa em 50%, igual ao valor inicial do slider
-
 volumeSlider.addEventListener("input", () => {
   menuMusic.volume = Number(volumeSlider.value);
 });
+
+// EFEITOS SONOROS DURANTE O JOGO → ESPADA E ATAQUE DO COGUMELO
+const somAtaqueEspada = new Audio("assets/audio/sword.mp3");
+const somAtaqueInimigo = new Audio("assets/audio/enemieAttack.wav");
+somAtaqueEspada.volume = 0.5;
+somAtaqueInimigo.volume = 0.5;
+
+//EFEITO SONORO QUANDO O JOGO ACABA - GAME OVER
+const somGameOver = new Audio("assets/audio/gameOver.mp3");
+somGameOver.volume = 0.8;
 
 // Se o navegador bloquear o autoplay, a primeira interação do usuário inicia a música
 document.addEventListener("click", () => {
@@ -328,10 +354,8 @@ document.addEventListener("click", () => {
 
 // Tela cheia
 fullscreenButton.addEventListener("click", () => {
-  const gameContainer = document.querySelector(".game-container");
-
   if (!document.fullscreenElement) {
-    gameContainer.requestFullscreen();
+    document.documentElement.requestFullscreen();
   } else {
     document.exitFullscreen();
   }
@@ -346,31 +370,93 @@ function esconderTelas() {
   gameOverScreen.classList.add("hidden");
 }
 
+function mostrarGameOver() {
+  // Evita abrir a tela várias vezes
+  if (gameOverAtivado) {
+    return;
+  }
+  gameOverAtivado = true;
+  gameState = "gameOver"; // O jogo deixa de atualizar
+  finalScore.textContent = `Pontuação: ${score}`; // Mostra a pontuação final
+  esconderTelas(); // Esconde qualquer outra tela
+  gameOverScreen.classList.remove("hidden"); // Mostra Game Over
+  menuCharacter.classList.add("hidden"); // Garante que a personagem decorativa do menu não apareça porque não quero
+} //FIM
+
+/******************************************************************************** */
+//                             RESETANDO  E CRIANDO A FUNÇÃO DE REINÍCIO
+/***********************************************************************************/
+function resetarJogo() {
+  // ---------------------------------------
+  // RESETA A PERSONAGEM
+  // ---------------------------------------
+  player.x = 400;
+  player.y = FLOOR_Y;
+  player.velocityY = 0;
+  player.noChao = true;
+  player.hp = 100; // Vida volta ao máximo
+
+  // ---------------------------------------
+  // RESETA A ANIMAÇÃO
+  // ---------------------------------------
+  playerSprite.animAtual = "idle";
+  playerSprite.frameAtual = 0;
+  playerSprite.timer = 0;
+  playerSprite.terminou = false;
+
+  // ---------------------------------------
+  // REMOVE INIMIGOS E ATAQUES ANTIGOS
+  // ---------------------------------------
+  inimigos.length = 0;
+  ataqueInimigo.length = 0;
+
+  // ---------------------------------------
+  // RESETA OS CRONÔMETROS
+  // ---------------------------------------
+  spawnTimer = 0;
+  ataqueTimer = 0;
+
+  // ---------------------------------------
+  // RESETA A PONTUAÇÃO
+  // ---------------------------------------
+  score = 0;
+
+  // ---------------------------------------
+  // LIBERA O PRÓXIMO GAME OVER
+  // ---------------------------------------
+  gameOverAtivado = false;
+  somMorteTocado = false;
+
+  // Evita alguma tecla continuar "pressionada" depois de reiniciar
+  Object.keys(keysPressed).forEach((key) => {
+    keysPressed[key] = false;
+  });
+} //FIM
+
 // SPLASH SCREEN
 // Depois de 2 segundos, sai da splash e mostra o menu
 setTimeout(() => {
   esconderTelas();
 
   menuScreen.classList.remove("hidden");
+  menuCharacter.classList.remove("hidden");
   gameState = "menu";
-  // menuMusic.play().catch(() => {
-  //   console.log("O navegador bloqueou o autoplay.");
-  // });
+  menuMusic.play().catch(() => {
+    console.log("O navegador bloqueou o autoplay.");
+  });
 }, 2000);
 
 // TELA DE JOGOS
 playButton.addEventListener("click", () => {
-  esconderTelas(); // Esconde menu, opções, créditos etc.
-  gameState = "playing"; // Inicia o jogo
-  // Para a música do menu
-  // !! CONTINUAR MUSICA !!
-  menuMusic.pause();
-  menuMusic.currentTime = 0;
+  esconderTelas();
+  menuCharacter.classList.add("hidden");
+  gameState = "playing";
 });
 
 // TELA DE OPÇÕES
 optionsButton.addEventListener("click", () => {
   esconderTelas();
+  menuCharacter.classList.add("hidden");
   optionsScreen.classList.remove("hidden");
   gameState = "options";
 });
@@ -378,6 +464,7 @@ optionsButton.addEventListener("click", () => {
 backOptionsButton.addEventListener("click", () => {
   esconderTelas();
   menuScreen.classList.remove("hidden");
+  menuCharacter.classList.remove("hidden");
   gameState = "menu";
 });
 // Volta para o menu principal
@@ -385,6 +472,7 @@ backOptionsButton.addEventListener("click", () => {
 // TELA DE CRÉDITOS
 creditsButton.addEventListener("click", () => {
   esconderTelas();
+  menuCharacter.classList.add("hidden");
   creditsScreen.classList.remove("hidden");
   gameState = "credits";
 });
@@ -392,6 +480,24 @@ creditsButton.addEventListener("click", () => {
 backCreditsButton.addEventListener("click", () => {
   esconderTelas();
   menuScreen.classList.remove("hidden");
+  menuCharacter.classList.remove("hidden");
+  gameState = "menu";
+});
+
+// TELA DE REINÍCIO →  JOGAR NOVAMENTE
+restartButton.addEventListener("click", () => {
+  resetarJogo();
+  esconderTelas();
+  menuCharacter.classList.add("hidden");
+  gameState = "playing";
+}); //FIM
+
+//VOLTAR AO MENU DEPOIS DO GAME OVER
+menuButton.addEventListener("click", () => {
+  resetarJogo();
+  esconderTelas();
+  menuScreen.classList.remove("hidden");
+  menuCharacter.classList.remove("hidden");
   gameState = "menu";
 });
 
@@ -510,6 +616,9 @@ function spawnInimigo() {
 }
 
 function spawnAtaqueInimigo(inimigo) {
+  somAtaqueInimigo.currentTime = 0; // SOM DO ATAQUE DO INIMIGO
+  somAtaqueInimigo.play(); // SOM DO ATAQUE DO INIMIGO
+
   // vai calcular qual a distancia do inimigo até a personagem
   // se ta perto, vai numa velocidade ok
   // se esta longe vai super rapido
@@ -535,7 +644,8 @@ function atualizaHUD() {
 
   const porcentagemPower = Math.max(0, (player.tempoVida / PODER_MAX) * 100);
   powerBar.style.width = porcentagemPower + "%";
-  scorePowerDisplay.textContent = "Energia: " + Math.floor(player.tempoVida) + "/" + PODER_MAX;
+  scorePowerDisplay.textContent =
+    "Energia: " + Math.floor(player.tempoVida) + "/" + PODER_MAX;
 }
 
 function ativarPoder() {
@@ -561,13 +671,14 @@ function configuraTudo() {
   window.addEventListener("keyup", (e) => (keysPressed[e.key] = false));
 
   // PERDIDINHA
+  //uniform float u_rotation; → uma alteração da Sophia para o projétil → toraçãp do objeto
   const vsCode = `#version 300 es
     in vec2 a_position;
     in vec2 a_texcoord;
 
     uniform vec2 u_playerPos;
     uniform vec2 u_resolution;
-
+    
     out vec2 v_texcoord;
 
     void main() {
@@ -578,8 +689,7 @@ function configuraTudo() {
 
       gl_Position = vec4(clipSpace.x, -clipSpace.y, 0.0, 1.0);
       v_texcoord = a_texcoord;
-    }
-  `;
+  }`;
 
   // aplica a cor do pixel da textura
   const fsCode = `#version 300 es
@@ -637,6 +747,7 @@ function configuraTudo() {
   // variáveis uniform no shader
   playerPosLocation = gl.getUniformLocation(program, "u_playerPos");
   resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+  //rotationLocation =  gl.getUniformLocation(program, "u_rotation");// PARA A TORRE PODER GIRAR
 
   // transparência pro ong
   gl.enable(gl.BLEND);
@@ -926,41 +1037,6 @@ function configuraTudo() {
     plataformasVaos.push(platVao);
   });
 
-  // TEXTURA DO CHÃO
-
-  // camadasPlat.forEach((camada) => {
-  //   camada.texture = gl.createTexture();
-  //   gl.bindTexture(gl.TEXTURE_2D, camada.texture);
-  //   groundTexture = gl.createTexture();
-
-  //   // cor temporaria pra carregar o fundo
-  //   gl.texImage2D(
-  //     gl.TEXTURE_2D,
-  //     0,
-  //     gl.RGBA,
-  //     1,
-  //     1,
-  //     0,
-  //     gl.RGBA,
-  //     gl.UNSIGNED_BYTE,
-  //     new Uint8Array([0, 0, 0, 0]),
-  //   );
-
-  //   const img = new Image();
-  //   img.src = camada.src;
-
-  //   img.onload = () => {
-  //     gl.bindTexture(gl.TEXTURE_2D, camada.texture);
-  //     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-
-  //     // Filtro pixel art para não borrar
-  //     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-  //     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-  //     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-  //     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  //   };
-  // });
-
   const groundImage = new Image();
   groundImage.src = "assets/cenario/camadas/Files/Ground_plat.png";
   groundTexture = gl.createTexture();
@@ -996,10 +1072,18 @@ function atualizaLogica(quantoPassou) {
   // personagem morreu, nada pode acontecer depois, ou seja, andar, pular, aparecer inimigo
   // colocar tela de game over
   if (player.hp <= 0) {
+    // Toca o efeito sonoro UMA VEZ
+    // assim que a personagem morre
+    if (!somMorteTocado) {
+      somGameOver.currentTime = 0;
+      somGameOver.play();
+      somMorteTocado = true;
+    }
+
     trocarSprite("death");
     atualizaHUD();
 
-    // sabe qual animacao esta
+    // sabe qual animacao está
     const animAtualObj = animacoesPlayer[playerSprite.animAtual];
     // isso aqui vai acumulando o tempo que aquele frame da animcao ficou na tela
     playerSprite.timer += quantoPassou;
@@ -1013,6 +1097,9 @@ function atualizaLogica(quantoPassou) {
         playerSprite.frameAtual++;
         // ai se for o ultimo, ve se a animacao é de loop, tambem configurado lá em cima
         // se for loop, volta pro frame 0
+      } else {
+        playerSprite.terminou = true; // A animação de morte terminou
+        mostrarGameOver(); // Agora mostra a tela de Game Over
       }
     }
     return;
@@ -1053,6 +1140,37 @@ function atualizaLogica(quantoPassou) {
     keysPressed["d"]
   ) {
     animDesejada = "walk";
+  }
+
+  //23/09
+  // ======================================================
+  // ATAQUE COM ESPADA QUANDO O COGUMELO ESTÁ PRÓXIMO
+  // ======================================================
+  // Procura um inimigo que esteja perto da personagem
+  const inimigoMuitoProximo = inimigos.find((inimigo) => {
+    const distanciaX = Math.abs(inimigo.x - player.x);
+    const distanciaY = Math.abs(inimigo.y - player.y);
+    return distanciaX <= 80 && distanciaY <= 60;
+  });
+
+  // Se encontrou um inimigo perto e não está atacando agora
+  if (inimigoMuitoProximo && playerSprite.animAtual !== "attack") {
+    trocarSprite("attack"); // Inicia a animação da espada
+    somAtaqueEspada.currentTime = 0; // SOM DO ATAQUE COM ESPADA
+    somAtaqueEspada.play(); // SOM DO ATAQUE COM ESPADA
+    inimigoMuitoProximo.hp -= DANO_ESPADA; // Tira vida do cogumelo
+
+    console.log("Espada acertou! Vida do inimigo:", inimigoMuitoProximo.hp);
+
+    // Se acabou a vida, remove o inimigo
+    if (inimigoMuitoProximo.hp <= 0) {
+      const indiceInimigo = inimigos.indexOf(inimigoMuitoProximo);
+      if (indiceInimigo !== -1) {
+        inimigos.splice(indiceInimigo, 1);
+        score++; //para aumentar a pontuação da torre
+      }
+      console.log("Inimigo derrotado pela espada!");
+    }
   }
 
   // essa tem que sobrepor qualquer outra
@@ -1176,6 +1294,98 @@ function atualizaLogica(quantoPassou) {
   });
 
   // console.log(inimigos);
+  /*
+    // ======================================
+    // ATAQUE AUTOMÁTICO COM ESPADA
+    // ======================================
+
+    espadaTimer += quantoPassou;
+
+    if (espadaTimer >= configEspada.cooldown) {
+
+    const alvo = encontrarInimigoMaisProximo();
+
+    if (alvo) {
+
+        const espada = criarProjetilEspada(
+        player.x,
+        player.y,
+        alvo
+        );
+
+        projeteisEspada.push(espada);
+
+        espadaTimer = 0;
+
+        // Personagem executa animação de ataque
+        trocarSprite("attack");
+    }
+    }*/
+
+  /*
+    // ======================================
+    // MOVIMENTO E COLISÃO DAS ESPADAS
+    // ======================================
+
+    projeteisEspada = projeteisEspada.filter((espada) => {
+
+    // Move a espada
+    espada.x +=
+        espada.velocidadeX * quantoPassou;
+
+    espada.y +=
+        espada.velocidadeY * quantoPassou;
+
+
+    // Verifica colisão com os inimigos
+    for (
+        let i = inimigos.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        const inimigo = inimigos[i];
+
+        const acertou =
+        Math.abs(espada.x - inimigo.x) <= 50 &&
+        Math.abs(espada.y - inimigo.y) <= 40;
+
+
+        if (acertou) {
+
+        inimigo.hp -= configEspada.dano;
+
+        console.log(
+            "Espada acertou! HP do inimigo:",
+            inimigo.hp
+        );
+
+
+        if (inimigo.hp <= 0) {
+
+            inimigos.splice(i, 1);
+
+            console.log(
+            "Inimigo derrotado pela espada!"
+            );
+        }
+
+
+        // A espada desaparece ao atingir um inimigo
+        return false;
+        }
+    }
+
+
+    // Remove espada que saiu da tela
+    const foraDaTela =
+        espada.x < -100 ||
+        espada.x > canvas.width + 100 ||
+        espada.y < -100 ||
+        espada.y > canvas.height + 100;
+
+    return !foraDaTela;
+    });*/
 
   // config ataque inimigos
   ataqueTimer += quantoPassou;
@@ -1376,18 +1586,64 @@ function desenhaCena(gl) {
 }
 
 gl = configuraTudo();
+
+// ===================================================================
+// ATAQUE COM MOUSE - "DEDADA" - COGUMELO
+// ===================================================================
+canvas.addEventListener("click", (event) => {
+  // Só permite dedada durante o jogo
+  if (gameState !== "playing") {
+    return;
+  }
+
+  // Tamanho que o canvas está ocupando na tela do navegador
+  // professor pediu tela cheia né? com essa conversão as dedadas no inimigo cogumelo acertarão o lugar correto
+  const rect = canvas.getBoundingClientRect();
+
+  //Converte a posição do clique da tela para as coordenadas internas do canvas 800x600
+  /*clientX and clientY: These are properties of the event object that provide the X and Y coordinates of the mouse relative to the viewport. 
+  Using these properties, you can capture the mouse’s position in real time.*/
+  const mouseX = (event.clientX - rect.left) * (canvas.width / rect.width);
+  const mouseY = (event.clientY - rect.top) * (canvas.height / rect.height);
+
+  // Percorre os inimigos de trás para frente
+  for (let i = inimigos.length - 1; i >= 0; i--) {
+    const inimigo = inimigos[i];
+    // O inimigo desenhado (cogumelo) ocupa aproximadamente 100 pixels de largura e 80 pixels de altura
+    // O inimigo vai de -50 a +50 horizontalmente e de -40 a +40 verticalmente, totalizando uma área de 100 x 80 px
+    const clicouNoInimigo =
+      mouseX >= inimigo.x - 50 &&
+      mouseX <= inimigo.x + 50 &&
+      mouseY >= inimigo.y - 40 &&
+      mouseY <= inimigo.y + 40;
+    if (clicouNoInimigo) {
+      // Tira vida do inimigo
+      inimigo.hp -= DANO_DEDADA;
+      console.log("Dedada! Vida do inimigo:", inimigo.hp);
+      // Se a vida acabou, remove o inimigo
+      if (inimigo.hp <= 0) {
+        inimigos.splice(i, 1);
+        score++; //aumenta a pontuação da torre
+        console.log("Inimigo derrotado!");
+      }
+      // Um clique acerta apenas um inimigo
+      break;
+    }
+  }
+});
+
 let logoAntes = 0;
 
 function loopPrincipal(agora) {
   const quantoPassou = (agora - logoAntes) / 1000;
   logoAntes = agora;
-
   if (gl) {
-    atualizaLogica(quantoPassou);
+    // Só atualiza o jogo depois de clicar em Jogar
+    if (gameState === "playing") {
+      atualizaLogica(quantoPassou);
+    }
     desenhaCena(gl);
   }
-
   requestAnimationFrame(loopPrincipal);
 }
-
 requestAnimationFrame(loopPrincipal);
