@@ -2,7 +2,7 @@
  
 1. O básico que é desenhar um quadrado colorido na tela e conseguir mover ele com o teclado (ja foi dificil) ✅
 2. Trocar o quadrado por uma textura -> PNG qualquer ✅
-3. Inimigos, spawn, movimento na direção do personagem, dano
+3. Inimigos, spawn, movimento na direção do personagem, dano ✅
 4. Ataque automático do personagem, cooldown, projétil, dano no inimigo mais próximo
 Quero ataque automatico *por enquanto*, se der tempo colocamos atque com M1
 
@@ -25,9 +25,38 @@ vídeo aula: https://www.youtube.com/watch?v=cjpQU6NutU0
 
 // SEÇÃO 01 - VARIAVEIS GLOBAIS E CONFIGURAÇÕES DO JOGO
 
+// Essas variaveis são criadas no configuraTudo e usadas no desenhaCena
+const PODER_MAX = 50;
+const PODER_TEMPO_PARA_CHEIO = 30;
+
+let gl;
+let program;
+let vao;
+let playerPosLocation;
+let resolutionLocation;
+let canvas;
+let playerTexcoordBuffer;
+let groundTexture;
+let groundVao;
+let inimigoVao;
+let inimigoTexture;
+let inimigoTexcoordBuffer;
+let ataqueInimigoVao;
+let ataqueTexture;
+let ataqueTexcoordBuffer;
+let tempoVida;
+
 // Configurações e estado do jogo
 // precisa colocar gravidade (?) e verificar se ela está ou não n chão
-const player = { x: 400, y: 500, velocityY: 0, noChao: true, hp: 100 };
+const player = {
+  x: 400,
+  y: 500,
+  velocityY: 0,
+  noChao: true,
+  hp: 100,
+  tempoVida: 0,
+  dano: 2,
+};
 const playerSpeed = 200; // pixels por segundo
 const keysPressed = {};
 
@@ -52,29 +81,12 @@ const playerSprite = {
 //   terminou: false,
 // };
 
-// Essas variaveis são criadas no configuraTudo e usadas no desenhaCena
-let gl;
-let program;
-let vao;
-let playerPosLocation;
-let resolutionLocation;
-let canvas;
-let playerTexcoordBuffer;
-let groundTexture;
-let groundVao;
-let inimigoVao;
-let inimigoTexture;
-let inimigoTexcoordBuffer;
-let ataqueInimigoVao;
-let ataqueTexture;
-let ataqueTexcoordBuffer;
-
 // plataformas do cenario
 // ordem de cima pra baixo da esquerda pra direita
 // x, y = canto superior esquerdo;
 const plataformas = [
   { x: 640, y: 70, largura: 120, altura: 33 },
-  { x: 0, y: 60, largura: 120, altura: 33 },
+  // { x: 0, y: 60, largura: 120, altura: 33 },
   { x: 300, y: 100, largura: 120, altura: 33 },
   { x: 100, y: 200, largura: 120, altura: 33 },
   { x: 550, y: 200, largura: 120, altura: 33 },
@@ -243,6 +255,7 @@ const configInimigos = {
     altura: 40,
     velocityY: 90,
     hp: 4, // vida dele
+    tempoParaMudar: 3,
   },
   // voador: {
   //  largura: 40,
@@ -257,10 +270,10 @@ const configAtaqueInimigos = {
   altura: 10,
   // velocidade: 200,
   dano: 10,
-  cooldownAtaque: 2,
+  cooldownAtaque: 1,
 };
 
-const spawn = 5; // vai aparecer um inimigo no chao a cada 3 segundos
+const spawn = 3; // vai aparecer um inimigo no chao a cada 3 segundos
 let spawnTimer = 0;
 let ataqueTimer = 0;
 
@@ -288,9 +301,17 @@ const menuButton = document.querySelector("#menuButton");
 // Opções
 const volumeSlider = document.querySelector("#volumeSlider");
 
+// Hud
+const hpBar = document.querySelector("#hpBar");
+const scoreDisplay = document.querySelector("#score");
+
+// Hud Power
+const powerBar = document.querySelector("#powerBar");
+const scorePowerDisplay = document.querySelector("#scorePower");
+
 // Música do Menu
 // não consigo fazer a musica iniciar sem que haja uma interação do usuário. =(
-const menuMusic = new Audio("assets/audio/Celestial_Path.wav");
+const menuMusic = new Audio("assets/audio/Celestial Path.wav");
 menuMusic.loop = true;
 menuMusic.volume = Number(volumeSlider.value); // Começa em 50%, igual ao valor inicial do slider
 
@@ -329,6 +350,7 @@ function esconderTelas() {
 // Depois de 2 segundos, sai da splash e mostra o menu
 setTimeout(() => {
   esconderTelas();
+
   menuScreen.classList.remove("hidden");
   gameState = "menu";
   // menuMusic.play().catch(() => {
@@ -462,6 +484,12 @@ function spawnInimigo() {
   const ladoEsquerdo = Math.random() < 0.5;
   const x = ladoEsquerdo ? -30 : canvas.width + 30;
 
+  const direcoes = [-1, 1];
+  const direcao = direcoes[Math.floor(Math.random() * direcoes.length)];
+
+  // const timeRandom = [0, 1, 2, 3];
+  // const timer = timeRandom[Math.floor(Math.random() * direcoes.length)];
+
   inimigos.push({
     tipo: "chao",
     x: x,
@@ -473,6 +501,11 @@ function spawnInimigo() {
     frameAtual: 0,
     timer: 0,
     terminou: false,
+    // pra que lado ele vai, estava seguindo a personagem e acumulando em um lugar só
+    // melhor deixar ele andar aleatorio e só o ataque dele, seguir a personagem
+    direcao: direcao,
+    // precisa de ter um tempo para ele ficar nessa direçao, entao ele precisa saber se esse tempo estourou
+    timeRandom: 0,
   });
 }
 
@@ -493,6 +526,27 @@ function spawnAtaqueInimigo(inimigo) {
     timer: 0,
     terminou: false,
   });
+}
+
+function atualizaHUD() {
+  const porcentagemHP = Math.max(0, (player.hp / 100) * 100);
+  hpBar.style.width = porcentagemHP + "%";
+  scoreDisplay.textContent = "HP: " + player.hp + "/100";
+
+  const porcentagemPower = Math.max(0, (player.tempoVida / PODER_MAX) * 100);
+  powerBar.style.width = porcentagemPower + "%";
+  scorePowerDisplay.textContent = "Energia: " + Math.floor(player.tempoVida) + "/" + PODER_MAX;
+}
+
+function ativarPoder() {
+  if (player.hp <= 0) return;
+
+  if (player.tempoVida >= PODER_MAX) {
+    player.dano *= 2; // dobra o dano
+    player.tempoVida = 0; // comeca a encher de novo
+
+    console.log("Poder ativado! Novo dano:", player.dano);
+  }
 }
 
 // SEÇÃO 03 - RODA UMA VEZ SÓ
@@ -943,6 +997,7 @@ function atualizaLogica(quantoPassou) {
   // colocar tela de game over
   if (player.hp <= 0) {
     trocarSprite("death");
+    atualizaHUD();
 
     // sabe qual animacao esta
     const animAtualObj = animacoesPlayer[playerSprite.animAtual];
@@ -1051,11 +1106,44 @@ function atualizaLogica(quantoPassou) {
 
   inimigos.forEach((inimigo) => {
     if (inimigo.tipo === "chao") {
-      const distancia = configInimigos.chao.velocityY * quantoPassou;
+      // vendo quanto tempo para mudar a direcao
+      inimigo.timeRandom += quantoPassou;
+
+      // o tempo estourou, chegou ao fim, sorteia a direcao dnv
+      if (inimigo.timeRandom >= configInimigos.chao.tempoParaMudar) {
+        inimigo.timeRandom = 0; // volta o timer pra zero
+
+        //nova direcao esquerda, para, direita
+        const direcoes = [-1, 0, 1];
+        inimigo.direcao = direcoes[Math.floor(Math.random() * direcoes.length)];
+
+        // mudar animcaozinhaaa
+        if (inimigo.direcao === 0) {
+          inimigo.animAtual = "idle";
+        } else {
+          inimigo.animAtual = "running";
+        }
+      }
+
+      // define a direcao no array
+      inimigo.x +=
+        inimigo.direcao * configInimigos.chao.velocityY * quantoPassou;
+
+      const bateuEsquerda = inimigo.x <= 25;
+      const bateuDireita = inimigo.x >= canvas.width - 25;
+
+      if (bateuEsquerda || bateuDireita) {
+        inimigo.direcao = bateuEsquerda ? 1 : -1;
+        inimigo.timeRandom = 0;
+        inimigo.animAtual = "running";
+      }
+
+      inimigo.x = Math.max(25, Math.min(canvas.width - 25, inimigo.x));
+      // const distancia = configInimigos.chao.velocityY * quantoPassou;
 
       // segue o player só no chao, sempre grudado
-      if (inimigo.x < player.x) inimigo.x += distancia;
-      else if (inimigo.x > player.x) inimigo.x -= distancia;
+      // if (inimigo.x < player.x) inimigo.x += distancia;
+      // else if (inimigo.x > player.x) inimigo.x -= distancia;
 
       inimigo.y = FLOOR_Y + 10; // sempre no chao
     }
@@ -1086,6 +1174,8 @@ function atualizaLogica(quantoPassou) {
     // fazer se der tempo
     // else if (inimigo.tipo === "voador")
   });
+
+  // console.log(inimigos);
 
   // config ataque inimigos
   ataqueTimer += quantoPassou;
@@ -1177,8 +1267,21 @@ function atualizaLogica(quantoPassou) {
     player.y += player.velocityY * quantoPassou; // Atualiza a posição Y
   }
 
+  // poder na tecla E
+  if (keysPressed["e"] || keysPressed["E"]) {
+    ativarPoder();
+  }
+
   // não deixa o personagem sair da tela que defini
   player.x = Math.max(35, Math.min(canvas.width - 35, player.x));
+
+  // aumenta a energia com o tempo, até encher a barra
+  player.tempoVida = Math.min(
+    PODER_MAX,
+    player.tempoVida + (PODER_MAX / PODER_TEMPO_PARA_CHEIO) * quantoPassou,
+  );
+
+  atualizaHUD();
 }
 
 function desenhaCena(gl) {
