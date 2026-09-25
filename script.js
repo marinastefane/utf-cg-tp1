@@ -1,21 +1,30 @@
-/*
- 
+/* 
 1. O básico que é desenhar um quadrado colorido na tela e conseguir mover ele com o teclado (ja foi dificil) ✅
 2. Trocar o quadrado por uma textura -> PNG qualquer ✅
 3. Inimigos, spawn, movimento na direção do personagem, dano ✅
 4. Ataque automático do personagem, cooldown, projétil, dano no inimigo mais próximo
-Quero ataque automatico *por enquanto*, se der tempo colocamos atque com M1
-
-ATAQUE COM MOUSE:
-SOPHIA: * o jogador pode usar o _mouse_ para dar "dedadas" no inimigo e subtrair alguns pontos de vida também,ao clicar neles.
-Isso é um evento específico chamado click:  https://www.w3schools.com/jsref/event_onclick.asp
-vídeo aula: https://www.youtube.com/watch?v=cjpQU6NutU0
-
 5. HUD — HP e pontuação na tela
 6. Game over + restart !!!!sem alert().
 7. trocar os placeholders por personagens lindos e bonitos
 8. Animação do jogo, bombinha, sons, tela bonitinha...
 */
+
+
+/************************************************************************************
+                                 REFERÊNCIAS E MATERIAIS
+ ************************************************************************************* /
+1. DEDADA: Isso é um evento específico chamado click:  https://www.w3schools.com/jsref/event_onclick.asp
+2. DEDADA: https://www.youtube.com/watch?v=cjpQU6NutU0
+3. MouseEvent clientY Property: https://www.w3schools.com/jsref/event_clienty.asp  
+4. MouseEvent clientX Property: https://www.w3schools.com/jsref/event_clientx.asp
+5.
+6.
+7.
+
+*/
+
+
+
 
 // colisaoccd
 // fazer mais detecção de colisão, mais frequente, com distancias menores

@@ -1,18 +1,34 @@
+<!-- REFERÊNCIAS: 
+1. Controle de volume: https://developer.mozilla.org/pt-BR/docs/Web/HTML/Reference/Elements/input/range 
+2. Controle de volume: https://stackoverflow.com/questions/71577271/how-would-i-make-a-volume-slider-in-html 
+3. Link da fonte usada: https://www.fontspace.com/monas-font-f84531 
+4. Link da música usada: https://alkakrab.itch.io/free-12-jrpg-fantasy-tracks-game-music-pack  
+5. Link da personagem: https://jumpbutton.itch.io/red-cape-knight?download
+6. Link do inimigo: https://monopixelart.itch.io/forest-monsters-pixel-art
+7. Site onde retiramos os efeitos sonoros: https://pixabay.com/
+8. Material das aulas de Computação Gráfica do CEFET-MG do Professor Coutinho
+9. Link do Troféu: https://opengameart.org/content/cc0-award-icons 
+-->
+
 <!doctype html>
 <html lang="pt-br">
 
+<!-- HEAD DO HTML -->
 <head>
   <meta charset="UTF-8" />
-  <title>Tower Defense</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Tower Defense</title> <!-- NOME QUE APARECERÁ NA ABA DO NAVEGADOR -->
+  <link rel="stylesheet" href="style.css" /> <!-- CONECTA O HTML AO CSS -->
 </head>
+
 
 <body>
 
   <!-- PERSONAGEM DECORATIVA DO MENU -->
+  <!-- - O OBJETIVO É COLOCAR A PERSONAGEM EM EVIDÊNCIA E APRESENTÁ-LA AO USUÁRIO-->
   <img id="menuCharacter" class="hidden" src="assets/personagem/guerreira_menu2.png" alt="Personagem principal" />
 
-  <div class="game-container">
+
+  <div class="game-container"> <!-- CONTAINER PRINCIPAL DO JOGO  QUE CONTÉM TODAS AS TELAS-->
 
     <!-- CANVAS DO JOGO -->
     <canvas id="glcanvas" width="800" height="600">
@@ -24,8 +40,8 @@
     <!-- ********************************************************************************* -->
 
     <div id="splashScreen" class="screen">
-      <h1>The Odyssey</h1>
-      <p>Carregando...</p>
+      <h1>The Odyssey</h1> <!-- TÍTULO DO JOGO -->
+      <p>Carregando...</p> <!-- INFORMA O USUÁRIO SOBRE O CARREGAMENTO DA PÁGINA -->
     </div>
 
 
@@ -35,10 +51,11 @@
 
     <div id="menuScreen" class="screen hidden">
 
-      <h1>The Odyssey</h1>
+      <h1>The Odyssey</h1> <!-- TÍTULO JO JOGO -->
 
+      <!-- BOTÕES DO MENU PRINCIPAL POR TAMANHO DA PALAVRA/ FORMA PIRAMIDAL -->
       <button id="playButton">
-        Jogar
+        Jogar 
       </button>
 
       <button id="optionsButton">
@@ -57,16 +74,17 @@
 
 
     <!-- ********************************************************************************* -->
-    <!--                                  TELA OPÇÕES                                      -->
+    <!--                       TELA OPÇÕES - APENAS VOLUME                                 -->
     <!-- ********************************************************************************* -->
 
     <div id="optionsScreen" class="screen hidden">
 
-      <h2>Volume</h2>
+      <h2>Volume</h2> <!-- TÍTULO DA PÁGINA -->
 
-      <input id="volumeSlider" type="range" min="0" max="1" step="0.1" value="0.5" />
+      <input id="volumeSlider" type="range" min="0" max="1" step="0.1" value="0.5" /> <!-- CONTROLE DESLIZANTE P/ VOLUME -->
+      <!-- CONTROLA O VOLUME: MÍNIMO É 0 (MUDO) E MÁXIMO É 1 |  -->
 
-      <button id="backOptionsButton">
+      <button id="backOptionsButton"> <!-- BOTÃO DE VOLTAR | RETORNA PARA A TELA INICIAL -->
         Voltar
       </button>
 
@@ -79,42 +97,40 @@
 
     <div id="creditsScreen" class="screen hidden">
 
-      <h2>Créditos:</h2>
+      <h2>Créditos:</h2> <!-- TÍTULO DA PÁGINA -->
 
       <div class="credits-content">
 
         <h3>Desenvolvido por:</h3>
         <p>Sophia Silva e Marina Delfino</p>
 
-
         <h3>Fonte</h3>
         <p>Monas Demo Regular</p>
         <p>Designer: Suandana</p>
         <p>Licença: Personal Use</p>
-        <p>
-          Link: https://www.fontspace.com/monas-font-f84531
-        </p>
-
-
-        <h3>Música - Menu</h3>
+        
+        <h3>Música</h3>
         <p>Celestial Path</p>
         <p>Composição: AlkaKrab</p>
         <p>Licença: Royalty-Free</p>
-        <p>
-          Link: https://alkakrab.itch.io/free-12-jrpg-fantasy-tracks-game-music-pack
-        </p>
-
-
-        <h3>Arte e cenário</h3>
-        <p>Adicionar aqui autor e origem</p>
-
-
-        <h3>Personagens</h3>
-        <p>Adicionar aqui autor e origem</p>
+        
+        <h3>Protagonista</h3>
+        <p>Girl Knight Character Asset</p>
+        <p>Designer: Jump_Button</p>
+        <p>Licença: Personal Uso</p>
+        
+        <h3>Inimigo</h3>
+        <p>Forest Monsters</p>
+        <p>Designer: MonoPixelArt</p>
+        <p>Licença: Personal Uso</p>   
+        
+        <h3>Efeitos sonoros</h3>
+        <p>Game Over Kid Voice Clip</p>
+        <p>Sword-sound</p>
 
       </div>
 
-      <button id="backCreditsButton">
+      <button id="backCreditsButton"> <!-- BOTÃO DE VOLTAR | RETORNA PARA A TELA INICIAL -->
         Voltar
       </button>
 
@@ -125,36 +141,44 @@
     <!-- ********************************************************************************* -->
     <!--                                  TELA GAME OVER                                   -->
     <!-- ********************************************************************************* -->
+    
     <div id="gameOverScreen" class="screen hidden">
 
-      <h1>Game Over</h1>
+      <h1>Game Over</h1> <!-- TÍTULO DA PÁGINA -->
 
-      <p id="finalScore">
+      <p id="finalScore"> <!-- MOSTRA A PONTUAÇÃO FINAL -->
         Pontuação: 0
       </p>
 
-      <button id="restartButton">
+      <button id="restartButton"> <!-- OPÇÃO DE REINICIAR O JOGO  -->
         Jogar novamente
       </button>
 
-      <button id="menuButton">
+      <button id="menuButton"> <!-- OPÇÃO DE RETORNAR PARA O MENU PRINCIAL -->
         Menu principal
       </button>
 
     </div>
 
+
+    <!-- ********************************************************************************* -->
+    <!--                  FUNCIONALIDADE HUD DE VIDA E DE ENERGIA                          -->
+    <!-- ********************************************************************************* -->
+
+    <!-- HUD DE VIDA -->
     <div id="hud">
-      <div id="hpContainer">
-        <div id="hpBar"></div>
+      <div id="hpContainer"> <!-- FUNDO DA BARRA DE VIDA -->
+        <div id="hpBar"></div> <!-- VISUAL DA QUANTIDADE DE VIDA  -->
       </div>
-      <div id="score">Vida: 0</div>
+      <div id="score">Vida: 0</div> <!-- EM Nº A QUANTIDADE DE VIDA -->
     </div>
 
+    <!-- HUD DE ENERGIA -->
     <div id="hudPower">
-      <div id="powerContainer">
-        <div id="powerBar"></div>
+      <div id="powerContainer"> <!-- FUNDO DA BARRA DE ENERGIA -->
+        <div id="powerBar"></div> <!-- VISUAL DA QUANTIDADE DE ENERGIA  -->
       </div>
-      <div id="scorePower">Energia: 0</div>
+      <div id="scorePower">Energia: 0</div> <!-- EM Nº A QUANTIDADE DE ENERGIA -->
     </div>
 
   </div>

@@ -1,14 +1,18 @@
-/* referência para esse bloco: 
-  1. Imagem ocupando a tela inteira com HTML e CSS (full screen)→ https://www.youtube.com/watch?v=hcNHuGol4WY 
-  2. A diferença entre largura: automática; e largura: 100% →  https://forsethingvild.medium.com/the-difference-between-width-auto-and-width-100-a58e2ac7832f
+/* REFERÊNCIAS: 
+  1. Full screen →  https://www.youtube.com/watch?v=hcNHuGol4WY 
+  2. Largura automática e largura: 100% →   https://forsethingvild.medium.com/the-difference-between-width-auto-and-width-100-a58e2ac7832f
   3. Proporção → https://web.dev/articles/aspect-ratio?hl=pt-br#aspect_ratio 
-  4. https://www.youtube.com/watch?v=hRf-Ol9Rl-8&list=PLclUTiUoLCbDHjxnd4FyliJuVeHS22pAK*/
+  4. Criação de um jogo completo com HTML, CSS e Javascript → https://www.youtube.com/watch?v=hRf-Ol9Rl-8&list=PLclUTiUoLCbDHjxnd4FyliJuVeHS22pAK
+  5. Fonte → https://www.fontspace.com/collection/cool-czo2n7y
+  6. Aspect-ratio Property (excelente site) → https://www.w3schools.com/CSSref/css_pr_aspect-ratio.php
+  7. Excluindo as propriedades padrão do CSS → https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/-webkit-border-before
+  8. Estilizando (excelente site) → https://web.dev/learn/css/welcome?hl=pt-br
+  */
 
-/*COLOCANDO A FONTE QUE ESCOLHEMOS PARA O TÍTULO DO JOGO */
-/* https://www.fontspace.com/collection/cool-czo2n7y */
 @font-face {
   font-family: "Monas";
   src: url("assets/fonts/MonasDemoRegular-eZl86.ttf") format("truetype");
+  /* COLOCANDO A FONTE QUE ESCOLHEMOS PARA O TÍTULO DO JOGO */
 }
 
 body {
@@ -25,26 +29,29 @@ body {
   overflow: hidden;
 }
 
-/* Área que contém o jogo */
+/* ÁREA QUE CONTÉM O JOGO: DEFINDO O COMPORTAMENTO E TAMANHO */
 .game-container {
   position: relative;
-  width: min(100vw, calc(100vh * 4 / 3));
-  height: min(100vh, calc(100vw * 3 / 4));
+  width: min(100vw, calc(100vh * 4 / 3)); /* CALCULA A LARGURA NECESSÁRIA PARA MANTER A PROPORÇÃO 4/3*/
+  height: min(100vh, calc(100vw * 3 / 4)); /* CALCULA A ALTURA NECESSÁRIA PARA MANTER A PROPORÇÃO 4/3 */
   aspect-ratio: 4 / 3;
-  /* definimos a nossa tela como 800 x 600 e vamos manter o padrão 4:28 */
-  /*nesse bloco: o jogo pode crescer ou diminuir visualmente, mas sempre conserva a nossa proporção */
-  overflow: hidden;
+  /* DEFINIMOS A NOSSA TELA COMO 800 X 600 E VAMOS MANTER O PADRÃO 4:3   DE FORMA QUE O JOGO PODE CRESCER 
+  OU DIMINUIR VISUALMENTE, MAS SEMPRE CONSERVA A NOSSA PROPORÇÃO */
+  overflow: hidden; /* ESCONDENDO TUDO QUE ULTRAPASSE OS LIMITES DA ÁREA DO JOGO*/
 }
 
+/* ESTILIZANDO O CANVAS ONDE O WEBGL DESENHA O JOGO */
 canvas {
   display: block;
-  width: 100%; /* ter 100% da largura visível da janelinha */
-  height: 100%; /* ter 100% da altura visível da janelinha */
-  background: #f58cf2; /* fundo rosa */
-  image-rendering: pixelated;
+  width: 100%; /* TER 100% DA LARGURA VISÍVEL DA JANELINHA */
+  height: 100%; /* TER 100% DA ALTURA VISÍVEL DA JANELINHA */
+  background: #f58cf2; /* FUNDO ROSINHA */
+  image-rendering: pixelated; /* "CONSERVANDO" O ASPECTO PIXELADO DAS IMAGENS QUANDO AUMENTADAS*/
 }
 
-/* Tela sobre o jogo */
+/***************************************************************************
+                              TELA SOBRE O JOGO
+****************************************************************************/
 .screen {
   font-family: "Monas", sans-serif;
   color: #b10b7f;
@@ -65,22 +72,22 @@ canvas {
 /***************************************************************************
                               SPLASH SCREEN 
 ****************************************************************************/
+ /* TÍTULO DO JOGO BEM LINDO, ROSA E GRANDE*/
 .screen h1 {
-  /* TÍTULO DO JOGO BEM LINDO, ROSA E GRANDE*/
   font-size: 150px;
   font-family: "Monas", sans-serif;
   color: #9c167d;
   text-shadow: 3px 3px 0 #f3afd8;
 }
 
+/* AVISO "CARREGANDO", BEM LINDO E ROSA*/
 .screen p {
-  /* AVISO "CARREGANDO", BEM LINDO E ROSA*/
   font-size: 45px;
   font-family: "Monas", sans-serif;
   color: #9c167d;
 }
 
-/* COLOCANDO FOTO DA PERSONAGEM*/
+/* COLOCANDO FOTO DA PERSONAGEM - DECORAÇÃO E APRESENTAÇÃO DA PERSONAGEM*/
 #menuCharacter {
   position: fixed;
   left: 200px;
@@ -94,28 +101,33 @@ canvas {
 /* **********************************************************************
                         PARA OS BOTÕES DA SPLASH SCREEN
 *************************************************************************/
-/* NÃO QUERO QUE OS BOTÕES PAREÇAM BOTÕES*/
+/* NÃO QUERO QUE OS BOTÕES PAREÇAM BOTÕES NA APRESENTAÇÃO DA PÁGINA*/
+/* MAS QUERO MOSTRAR PARA O USUÁRIO QUAL BOTÃO ESTÁ SELECIONADO NA TELA*/
 .screen button {
   font-family: "Monas", sans-serif;
   font-size: 45px;
   color: #b10b7f;
   background: transparent; /* FUNDO TRANSPARENTE */
   border: none; /* SEM BORDA */
-  border-radius: 15px;
+  border-radius: 15px; /*BORDA ARREDONDADA*/
   padding: 10px 20px;
   margin: 6px;
   cursor: pointer;
 }
 
-/* Sobe um pouco os botões do menu principal */
+/* SOBE UM POUCO OS BOTÕES DO MENU PRINCIPAL - MELHOR POSIÇÃO*/
 #menuScreen button {
   transform: translateY(-65px);
 }
 
+/* QUANDO O MOUSE PASSAR EM CIMA DO BOTÃO, SUA COR DE FUNDO SERÁ ALTERADA P/ OUTRA TONALIDADE DE ROSA */
 #menuScreen button:hover {
   background: #f2acd8;
   transform: translateY(-65px) scale(1.05);
 }
+
+
+
 /**************************************************************************
                                   PARA OS CRÉDITOS 
 ***************************************************************************/
@@ -143,25 +155,31 @@ canvas {
   margin: 5px;
 }
 
+/* BOTÃO "VOLTAR" DA PÁGINA DE CREDITOS */
 #backCreditsButton:hover {
   background: #f2acd8;
   transform: scale(1.05);
 }
+
+
 /*******************************************************************************
                                  VOLUME - OPÇÕES
 *********************************************************************************/
+ 
 #optionsScreen h2 {
   font-size: 55px;
   color: #9c167d;
   margin-bottom: 35px;
 }
 
+/* MUDEI MAS ESTOU INSEGURA EM APAGAR ESSA PARTE*/
 #optionsScreen label {
   font-size: 35px;
   margin-bottom: 10px;
 }
 
-/* a barrinha de volume chama  slider e tem duas partes: track → a barrinha comprida | thumb → a bolinha que você arrasta*/
+/* ESTILIZA O CONTROLE DE VOLUME*/ 
+/* A BARRINHA DE VOLUME CHAMA  SLIDER E TEM DUAS PARTES: TRACK → A BARRINHA COMPRIDA | THUMB → A BOLINHA QUE VOCÊ ARRASTA*/
 #volumeSlider {
   width: 500px;
   -webkit-appearance: none;
@@ -170,7 +188,8 @@ canvas {
   cursor: pointer;
 }
 
-/* BARRINHA  ESTILIZADAAAA*/
+/* BARRINHA  ESTILIZADAAAA (ESTILIZA A TRACK)*/
+/* A BARRA DE VOLUME PADRÃO DO CSS É FEIA. PARA ESTILIZAR, USAMOS A PROPRIEDADE -WEBKIT-APPEARANCE */
 #volumeSlider::-webkit-slider-runnable-track {
   height: 40px;
   background: #f2b9df;
@@ -178,7 +197,8 @@ canvas {
   border-radius: 20px;
 }
 
-/* BOLINHAAAAA */
+/* BARRINHA  ESTILIZADAAAA (ESTILIZA A THUMB)*/
+/* A BARRA DE VOLUME PADRÃO DO CSS É FEIA. PARA ESTILIZAR, USAMOS A PROPRIEDADE -WEBKIT-APPEARANCE */
 #volumeSlider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -191,7 +211,7 @@ canvas {
   margin-top: 1px;
 }
 
-/* botão */
+/* BOTÃO "VOLTAR" DA PÁGINA DE OPÇÕES */
 #backOptionsButton {
   position: absolute;
   bottom: 40px;
@@ -199,11 +219,15 @@ canvas {
   transform: translateX(-50%);
 }
 
+
+/*******************************************************************************
+                                 HUD: VIDA E ENERGIA 
+*********************************************************************************/  
 .game-container {
   position: relative; /* necessário pra HUD se posicionar em relação a essa div */
 }
 
-/* HUD HP */
+/* HUD HP → POSICIONAMOS O HUD DE VIDA NO CANTO SUPERIOR ESQUERDO DA ÁREA DO JOGO */
 #hud {
   position: absolute;
   top: 16px;
@@ -223,6 +247,7 @@ canvas {
   overflow: hidden;
 }
 
+/* BARRA VERMELINHA QUE REPRESENTA A VIDA : A BARRA COMEÇA CHEIA 100% */
 #hpBar {
   height: 100%;
   width: 100%; /* isso vai ser controlado pelo JS */
@@ -230,6 +255,7 @@ canvas {
   transition: width 0.2s ease;
 }
 
+/* TEXTO DA VIDA AO LADO DA BARRINHA*/
 #score {
   margin-top: -20px;
   margin-left: 210px;
@@ -237,7 +263,8 @@ canvas {
   font-weight: bold;
 }
 
-/* HUD Poder */
+/* BARRA PRETINHA QUE REPRESENTA O PODER*/
+/* HUD PODER/ENERGIA */
 #hudPower {
   position: absolute;
   top: 45px;
@@ -257,6 +284,7 @@ canvas {
   overflow: hidden;
 }
 
+/* INICIA VAZIA*/ 
 #powerBar {
   height: 100%;
   width: 0%;
@@ -270,10 +298,12 @@ canvas {
   font-size: 18px;
   font-weight: bold;
 }
+
 #backOptionsButton:hover {
   background: #f2acd8;
   transform: translateX(-50%) scale(1.05);
 }
+
 /*******************************************************************************
                                  GAME OVER
 *********************************************************************************/
