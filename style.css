@@ -299,6 +299,31 @@ canvas {
   font-weight: bold;
 }
 
+/* Ajuda */
+#ajuda {
+  position: absolute;
+  top: 700px;
+  left: 500px;
+  transform: translateY(-50%);
+  z-index: 10;
+  font-family: "Monas", sans-serif;
+  font-size: 40px;
+  /* font-weight: bold; */
+  color: white;
+}
+
+#tempoDeJogo {
+  position: absolute;
+  top: 45px;
+  left: 500px;
+  transform: translateY(-50%);
+  z-index: 10;
+  font-family: "Monas", sans-serif;
+  font-size: 40px;
+  /* font-weight: bold; */
+  color: white;
+}
+
 #backOptionsButton:hover {
   background: #f2acd8;
   transform: translateX(-50%) scale(1.05);
@@ -331,7 +356,6 @@ canvas {
   border: none; /* SEM BORDA */
   border-radius: 15px;
   min-width: 330px;
-
   padding: 12px 30px;
   margin: 5px;
 
