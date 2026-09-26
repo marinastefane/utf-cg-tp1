@@ -23,6 +23,9 @@ sophiasilva@gmail.com
 
 ## (c) Media Kit
 
+<img width="237" height="181" alt="image" src="https://github.com/user-attachments/assets/33654cb2-2ac1-41ff-8091-f01dae10974f" />  
+<img width="260" height="229" alt="image" src="https://github.com/user-attachments/assets/6884220e-72e7-45f3-84b8-281fafdd6008" />  
+<img width="451" height="282" alt="image" src="https://github.com/user-attachments/assets/6c62edf9-a46f-49c7-b7c9-bf1449100844" />
 
 ## (d) Opcionais
 
