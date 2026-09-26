@@ -8,6 +8,8 @@
 7. Site onde retiramos os efeitos sonoros: https://pixabay.com/
 8. Material das aulas de Computação Gráfica do CEFET-MG do Professor Coutinho
 9. Link do Troféu: https://opengameart.org/content/cc0-award-icons 
+10.Link da musica de vitória: https://pixabay.com/sound-effects/musical-orchestral-win-331233/
+11. Adicionando Áudio, Imagens, Vídeos: https://vainaweb.gitbook.io/construcao-de-paginas-web/capitulos/adicionando-audio-imagens-videos/aula
 -->
 
 <!doctype html>
@@ -98,8 +100,7 @@
     <div id="creditsScreen" class="screen hidden">
 
       <h2>Créditos:</h2> <!-- TÍTULO DA PÁGINA -->
-      <h2>Creditos:</h2>
-
+      
       <div class="credits-content">
 
         <h3>Desenvolvido por:</h3>
@@ -148,8 +149,6 @@
       <h1>Game Over</h1> <!-- TÍTULO DA PÁGINA -->
 
       <p id="finalScore"> <!-- MOSTRA A PONTUAÇÃO FINAL -->
-        Pontuação: 0
-      <p id="finalScore">
         Pontuacao: 0
       </p>
 
@@ -162,6 +161,40 @@
       </button>
 
     </div>
+
+    <!-- ********************************************************************************* -->
+    <!--                                    TELA DE VITÓRIA                                -->
+    <!-- ********************************************************************************* -->
+    <div id="victoryScreen" class="screen hidden">
+
+      <h1>Vitoria!</h1> <!-- TÍTULO DA PÁGINA -->
+
+      <!-- IMAGEM DO TROFÉU -->
+      <img
+        id="victoryTrophy"
+        src="assets/win/trofeu.png"
+        alt="Troféu de vitória"
+      />
+
+      <!-- MENSAGEM DE VITÓRIA -->
+      <p id="victoryMessage">
+        Você sobreviveu por 5 minutos!
+      </p>
+
+      <!-- PONTUAÇÃO FINAL -->
+      <p id="finalVictoryScore">
+        Pontuacao: 0
+      </p>
+
+      <button id="restartVictoryButton">
+        Jogar novamente
+      </button>
+
+      <button id="menuVictoryButton">
+        Menu principal
+      </button>
+
+  </div>
 
 
     <!-- ********************************************************************************* -->
