@@ -9,7 +9,6 @@
 8. Animação do jogo, bombinha, sons, tela bonitinha...
 */
 
-
 /************************************************************************************
                                  REFERÊNCIAS E MATERIAIS
  ************************************************************************************* /
@@ -22,7 +21,6 @@
 7.Jump handling and gravity:https://gamedev.stackexchange.com/questions/43660/jump-handling-and-gravity
 8. Lidando com sprites em JavaScript: https://galaxialgorithm.com/lidando-com-sprites-em-javascript/
 */
-
 
 /************************************************************************************
                 SEÇÃO 01 - VARIAVEIS GLOBAIS E CONFIGURAÇÕES DO JOGO
@@ -52,7 +50,6 @@ let vitoriaAtivada = false; //controla se a condição de vitória já foi ativa
 const keysPressed = {}; //guardar quais teclas estão pressionadas
 let tempoDeJogoContador = 0; // vai guardar tempo da partida  enquanto ela está acontecendo
 const TEMPO_PARA_VENCER = 300; // 300 segundos = 5 minutos
-
 
 // 01.2 - Configurações e estado do jogo
 // 01.2.1 - Personagem Principal
@@ -177,7 +174,6 @@ const camadasPlat = [
   },
   { src: "assets/cenario/camadas/Files/Ground_plat.png", texture: null },
 ];
-
 
 // 01.2.3 - Camadas Cenário Principal
 
@@ -337,13 +333,12 @@ const spriteAtaque = {
   texture: null,
 };
 
-
 /************************************************************************************
         SEÇÃO 02 - TELAS, HUD E INTERFACE DO NOSSO JOGO
- *************************************************************************************/
+*************************************************************************************/
 
 // 02.1  ESTADO DA INTERFACE E ELEMENTOS DO HTML
-let gameState = "splash";// Estado atual do jogo
+let gameState = "splash"; // Estado atual do jogo
 
 // Telas
 const splashScreen = document.querySelector("#splashScreen");
@@ -356,7 +351,6 @@ const menuCharacter = document.querySelector("#menuCharacter");
 const victoryScreen = document.querySelector("#victoryScreen");
 const finalVictoryScore = document.querySelector("#finalVictoryScore");
 
-
 // Botões
 const playButton = document.querySelector("#playButton");
 const optionsButton = document.querySelector("#optionsButton");
@@ -366,19 +360,16 @@ const backOptionsButton = document.querySelector("#backOptionsButton");
 const backCreditsButton = document.querySelector("#backCreditsButton");
 const restartButton = document.querySelector("#restartButton"); //BOTÃO DE REINÍCIO
 const menuButton = document.querySelector("#menuButton");
-const restartVictoryButton =   document.querySelector("#restartVictoryButton");
-const menuVictoryButton =   document.querySelector("#menuVictoryButton");
-
+const restartVictoryButton = document.querySelector("#restartVictoryButton");
+const menuVictoryButton = document.querySelector("#menuVictoryButton");
 
 // Opções
 const volumeSlider = document.querySelector("#volumeSlider");
-
 
 // Hud
 const hudHP = document.querySelector("#hud");
 const hpBar = document.querySelector("#hpBar");
 const scoreDisplay = document.querySelector("#score");
-
 
 // Hud Power
 const hudPower = document.querySelector("#hudPower");
@@ -389,7 +380,6 @@ const ajudaTexto = document.querySelector("#ajuda");
 // Tempo de Jogo - CONDIÇÃO DE VITORIA
 const tempoDeJogo = document.querySelector("#tempoDeJogo");
 
-
 //02.2 - HUD E CONTADOR DE TEMPO
 
 function formatarSecParaMin(segundos) {
@@ -398,7 +388,6 @@ function formatarSecParaMin(segundos) {
 
   return `${min}:${seg.toString().padStart(2, "0")}`;
 }
-
 
 function atualizaHUD() {
   const porcentagemHP = Math.max(0, (player.hp / 100) * 100);
@@ -437,7 +426,6 @@ somGameOver.volume = 0.8;
 const somVitoria = new Audio("assets/audio/orchestralWin.mp3");
 somVitoria.volume = 0.8;
 
-
 // Se o navegador bloquear o autoplay, a primeira interação do usuário inicia a música
 document.addEventListener("click", () => {
   if (gameState === "menu" && menuMusic.paused) {
@@ -464,8 +452,7 @@ function esconderTelas() {
   creditsScreen.classList.add("hidden");
   gameOverScreen.classList.add("hidden");
   victoryScreen.classList.add("hidden");
- 
- 
+
   // HUD
   hudHP.classList.add("hidden");
   hpBar.classList.add("hidden");
@@ -498,13 +485,14 @@ function mostrarVitoria() {
   vitoriaAtivada = true;
   gameState = "victory"; // Para a atualização da lógica do jogo
   finalVictoryScore.textContent = `Pontuação: ${score}`; // Atualiza a pontuação mostrada na tela
-  somVitoria.currentTime = 0;// Toca o som da vitória
+  somVitoria.currentTime = 0; // Toca o som da vitória
   /*somVitoria.play(); // Toca o som da vitória
   esconderTelas(); // Esconde jogo/HUD/outras telas
   victoryScreen.classList.remove("hidden"); // Mostra a tela de vitória
-  menuCharacter.classList.add("hidden"); // Garante que a personagem decorativa do menu não apareça*/ 
+  menuCharacter.classList.add("hidden"); // Garante que a personagem decorativa do menu não apareça*/
 
-   somVitoria.play()
+  somVitoria
+    .play()
     .then(() => {
       console.log("Som da vitória tocou!");
     })
@@ -517,7 +505,6 @@ function mostrarVitoria() {
   victoryScreen.classList.remove("hidden");
   menuCharacter.classList.add("hidden");
 }
-
 
 // 02.6 - RESETANDO,  CRIANDO A FUNÇÃO DE REINÍCIO, NAVEGANDO ENTRE TELAS E BOTÕES
 
@@ -657,14 +644,13 @@ menuButton.addEventListener("click", () => {
   gameState = "menu";
 });
 
-
-//BOTÕES DA TELA DE VITÓRIA 
+//BOTÕES DA TELA DE VITÓRIA
 // JOGAR NOVAMENTE APÓS A VITÓRIA
 restartVictoryButton.addEventListener("click", () => {
-  resetarJogo();// Reseta todos os valores da partida
-  esconderTelas();// Esconde todas as telas
-  menuCharacter.classList.add("hidden");  // A personagem decorativa do menu não deve aparecer durante o jogo
-  gameState = "playing";// Volta o estado do jogo para jogando
+  resetarJogo(); // Reseta todos os valores da partida
+  esconderTelas(); // Esconde todas as telas
+  menuCharacter.classList.add("hidden"); // A personagem decorativa do menu não deve aparecer durante o jogo
+  gameState = "playing"; // Volta o estado do jogo para jogando
 
   // Mostra novamente o HUD da vida
   hudHP.classList.remove("hidden");
@@ -680,16 +666,14 @@ restartVictoryButton.addEventListener("click", () => {
   tempoDeJogo.classList.remove("hidden");
 });
 
-
 // VOLTAR AO MENU APÓS A VITÓRIA
 menuVictoryButton.addEventListener("click", () => {
   resetarJogo(); // Reseta a partida
   esconderTelas(); // Esconde todas as telas
   menuScreen.classList.remove("hidden"); // Mostra o menu principal
   menuCharacter.classList.remove("hidden"); // Mostra novamente a personagem decorativa do menu
-  gameState = "menu";  // Altera o estado para menu
+  gameState = "menu"; // Altera o estado para menu
 });
-
 
 /**********************************************************************************************************
                                      SEÇÃO 03 - FUNÇÕES AUXILIARES 
@@ -772,7 +756,6 @@ function trocarSprite(nome) {
   playerSprite.timer = 0;
   playerSprite.terminou = false;
 }
-
 
 /********************************************************************************************
  SEÇÃO 04 - RODA UMA VEZ SÓ
@@ -1232,7 +1215,7 @@ function configuraTudo() {
 // SEÇÃO 05 - CONTEM TODA A LOGICA DO JOGO
 function atualizaLogica(quantoPassou) {
   const distancia = playerSpeed * quantoPassou;
-  tempoDeJogoContador += quantoPassou; 
+  tempoDeJogoContador += quantoPassou;
 
   // 05.1 - Morte, pulo, ataque
 
@@ -1272,12 +1255,11 @@ function atualizaLogica(quantoPassou) {
     return;
   }
 
-   //VITÓRIa
-   if (tempoDeJogoContador >= TEMPO_PARA_VENCER) {
+  //VITÓRIa
+  if (tempoDeJogoContador >= TEMPO_PARA_VENCER) {
     mostrarVitoria();
     return;
   }
-
 
   // decide qual animação deveria tocar
   // sempre volta pra ela parada
@@ -1427,7 +1409,6 @@ function atualizaLogica(quantoPassou) {
   // não deixa o personagem sair da tela que defini
   player.x = Math.max(35, Math.min(canvas.width - 35, player.x));
 
-  
   // 05.4 - CONFIGURAÇÃO DOS INIMIGOS
 
   spawnTimer += quantoPassou;

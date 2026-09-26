@@ -16,6 +16,7 @@
 <html lang="pt-br">
 
 <!-- HEAD DO HTML -->
+
 <head>
   <meta charset="UTF-8" />
   <title>Tower Defense</title> <!-- NOME QUE APARECERÁ NA ABA DO NAVEGADOR -->
@@ -57,7 +58,7 @@
 
       <!-- BOTÕES DO MENU PRINCIPAL POR TAMANHO DA PALAVRA/ FORMA PIRAMIDAL -->
       <button id="playButton">
-        Jogar 
+        Jogar
       </button>
 
       <button id="optionsButton">
@@ -83,7 +84,8 @@
 
       <h2>Volume</h2> <!-- TÍTULO DA PÁGINA -->
 
-      <input id="volumeSlider" type="range" min="0" max="1" step="0.1" value="0.5" /> <!-- CONTROLE DESLIZANTE P/ VOLUME -->
+      <input id="volumeSlider" type="range" min="0" max="1" step="0.1" value="0.5" />
+      <!-- CONTROLE DESLIZANTE P/ VOLUME -->
       <!-- CONTROLA O VOLUME: MÍNIMO É 0 (MUDO) E MÁXIMO É 1 |  -->
 
       <button id="backOptionsButton"> <!-- BOTÃO DE VOLTAR | RETORNA PARA A TELA INICIAL -->
@@ -100,7 +102,7 @@
     <div id="creditsScreen" class="screen hidden">
 
       <h2>Créditos:</h2> <!-- TÍTULO DA PÁGINA -->
-      
+
       <div class="credits-content">
 
         <h3>Desenvolvido por:</h3>
@@ -110,22 +112,22 @@
         <p>Monas Demo Regular</p>
         <p>Designer: Suandana</p>
         <p>Licença: Personal Use</p>
-        
+
         <h3>Música</h3>
         <p>Celestial Path</p>
         <p>Composição: AlkaKrab</p>
         <p>Licença: Royalty-Free</p>
-        
+
         <h3>Protagonista</h3>
         <p>Girl Knight Character Asset</p>
         <p>Designer: Jump_Button</p>
         <p>Licença: Personal Uso</p>
-        
+
         <h3>Inimigo</h3>
         <p>Forest Monsters</p>
         <p>Designer: MonoPixelArt</p>
-        <p>Licença: Personal Uso</p>   
-        
+        <p>Licença: Personal Uso</p>
+
         <h3>Efeitos sonoros</h3>
         <p>Game Over Kid Voice Clip</p>
         <p>Sword-sound</p>
@@ -143,7 +145,7 @@
     <!-- ********************************************************************************* -->
     <!--                                  TELA GAME OVER                                   -->
     <!-- ********************************************************************************* -->
-    
+
     <div id="gameOverScreen" class="screen hidden">
 
       <h1>Game Over</h1> <!-- TÍTULO DA PÁGINA -->
@@ -170,11 +172,7 @@
       <h1>Vitoria!</h1> <!-- TÍTULO DA PÁGINA -->
 
       <!-- IMAGEM DO TROFÉU -->
-      <img
-        id="victoryTrophy"
-        src="assets/win/trofeu.png"
-        alt="Troféu de vitória"
-      />
+      <img id="victoryTrophy" src="assets/win/trofeu.png" alt="Troféu de vitória" />
 
       <!-- MENSAGEM DE VITÓRIA -->
       <p id="victoryMessage">
@@ -194,7 +192,7 @@
         Menu principal
       </button>
 
-  </div>
+    </div>
 
 
     <!-- ********************************************************************************* -->
@@ -202,7 +200,7 @@
     <!-- ********************************************************************************* -->
 
     <!-- HUD DE VIDA -->
-    <div id="hud">
+    <div id="hud" class="hidden">
       <div id="hpContainer"> <!-- FUNDO DA BARRA DE VIDA -->
         <div id="hpBar"></div> <!-- VISUAL DA QUANTIDADE DE VIDA  -->
       </div>
@@ -210,7 +208,7 @@
     </div>
 
     <!-- HUD DE ENERGIA -->
-    <div id="hudPower">
+    <div id="hudPower" class="hidden">
       <div id="powerContainer"> <!-- FUNDO DA BARRA DE ENERGIA -->
         <div id="powerBar"></div> <!-- VISUAL DA QUANTIDADE DE ENERGIA  -->
       </div>
@@ -221,7 +219,6 @@
     <div id="tempoDeJogo" class="hidden"> 00:00</div>
 
   </div>
-
 
   <script src="script.js"></script>
 

@@ -33,8 +33,14 @@ body {
 /* ÁREA QUE CONTÉM O JOGO: DEFINDO O COMPORTAMENTO E TAMANHO */
 .game-container {
   position: relative;
-  width: min(100vw, calc(100vh * 4 / 3)); /* CALCULA A LARGURA NECESSÁRIA PARA MANTER A PROPORÇÃO 4/3*/
-  height: min(100vh, calc(100vw * 3 / 4)); /* CALCULA A ALTURA NECESSÁRIA PARA MANTER A PROPORÇÃO 4/3 */
+  width: min(
+    100vw,
+    calc(100vh * 4 / 3)
+  ); /* CALCULA A LARGURA NECESSÁRIA PARA MANTER A PROPORÇÃO 4/3*/
+  height: min(
+    100vh,
+    calc(100vw * 3 / 4)
+  ); /* CALCULA A ALTURA NECESSÁRIA PARA MANTER A PROPORÇÃO 4/3 */
   aspect-ratio: 4 / 3;
   /* DEFINIMOS A NOSSA TELA COMO 800 X 600 E VAMOS MANTER O PADRÃO 4:3   DE FORMA QUE O JOGO PODE CRESCER 
   OU DIMINUIR VISUALMENTE, MAS SEMPRE CONSERVA A NOSSA PROPORÇÃO */
@@ -73,7 +79,7 @@ canvas {
 /***************************************************************************
                               SPLASH SCREEN 
 ****************************************************************************/
- /* TÍTULO DO JOGO BEM LINDO, ROSA E GRANDE*/
+/* TÍTULO DO JOGO BEM LINDO, ROSA E GRANDE*/
 .screen h1 {
   font-size: 150px;
   font-family: "Monas", sans-serif;
@@ -92,7 +98,7 @@ canvas {
 /* A IMAGEM ESTÁ FORA  DO .GAME-CONTAINER E POR ISSO NÃO ACOMPANHA A PROPORÇÃO.*/
 #menuCharacter {
   position: fixed;
-  /*left: 200px;*/ 
+  /*left: 200px;*/
   left: 140px;
   top: 180px;
   width: 300px;
@@ -129,8 +135,6 @@ canvas {
   transform: translateY(-65px) scale(1.05);
 }
 
-
-
 /**************************************************************************
                                   PARA OS CRÉDITOS 
 ***************************************************************************/
@@ -164,11 +168,10 @@ canvas {
   transform: scale(1.05);
 }
 
-
 /*******************************************************************************
                                  VOLUME - OPÇÕES
 *********************************************************************************/
- 
+
 #optionsScreen h2 {
   font-size: 55px;
   color: #9c167d;
@@ -181,7 +184,7 @@ canvas {
   margin-bottom: 10px;
 }
 
-/* ESTILIZA O CONTROLE DE VOLUME*/ 
+/* ESTILIZA O CONTROLE DE VOLUME*/
 /* A BARRINHA DE VOLUME CHAMA  SLIDER E TEM DUAS PARTES: TRACK → A BARRINHA COMPRIDA | THUMB → A BOLINHA QUE VOCÊ ARRASTA*/
 #volumeSlider {
   width: 500px;
@@ -222,10 +225,9 @@ canvas {
   transform: translateX(-50%);
 }
 
-
 /*******************************************************************************
                                  HUD: VIDA E ENERGIA 
-*********************************************************************************/  
+*********************************************************************************/
 .game-container {
   position: relative; /* necessário pra HUD se posicionar em relação a essa div */
 }
@@ -287,7 +289,7 @@ canvas {
   overflow: hidden;
 }
 
-/* INICIA VAZIA*/ 
+/* INICIA VAZIA*/
 #powerBar {
   height: 100%;
   width: 0%;
@@ -305,24 +307,24 @@ canvas {
 /* Ajuda */
 #ajuda {
   position: absolute;
-  top: 700px;
-  left: 500px;
-  transform: translateY(-50%);
+  bottom: 140px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 10;
   font-family: "Monas", sans-serif;
-  font-size: 40px;
+  font-size: 30px;
   /* font-weight: bold; */
   color: white;
 }
 
 #tempoDeJogo {
   position: absolute;
-  top: 45px;
-  left: 500px;
-  transform: translateY(-50%);
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 10;
   font-family: "Monas", sans-serif;
-  font-size: 40px;
+  font-size: 30px;
   /* font-weight: bold; */
   color: white;
 }
@@ -378,7 +380,6 @@ canvas {
   transform: scale(0.97);
 }
 
-
 /* ********************************************************************************* */
 /*                                  TELA DE VITÓRIA                                  */
 /* ********************************************************************************* */
@@ -432,7 +433,6 @@ canvas {
 #victoryScreen button:active {
   transform: scale(0.97);
 }
-
 
 /********************************************************
                          OUTROS
